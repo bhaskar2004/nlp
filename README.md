@@ -40,4 +40,4 @@ Open the provided URL in your browser to use the web interface.
 - For batch processing, upload plain text (`.txt`) files only.
 
 ---
-Feel free to extend the dictionaries and patterns in `medical_nlp.py` for more comprehensive extraction! 
+Feel free to extend the dictionaries and patterns in `medical_nlp.py` for more comprehensive extraction! # nlp
