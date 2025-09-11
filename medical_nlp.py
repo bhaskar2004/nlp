@@ -1,10 +1,10 @@
 import spacy
 from spacy.matcher import PhraseMatcher, Matcher
-from spacy.tokens import Span , Doc
+from spacy.tokens import Span, Doc
 import pandas as pd
 import numpy as np
 from collections import defaultdict, Counter
-from typing import List, Dict, Tuple, Set, Optional
+from typing import List, Dict, Tuple, Set, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import json
@@ -13,10 +13,19 @@ from sklearn.metrics.pairwise import cosine_similarity
 import networkx as nx
 from itertools import combinations
 import re
+import io
+import os
+from pathlib import Path
 
+# File processing imports
+import PyPDF2
+import docx
+import fitz  # PyMuPDF - better PDF processing
+from PIL import Image
+import pytesseract  # OCR for images in PDFs
 
 # Install required packages:
-# pip install spacy pandas numpy scikit-learn networkx
+# pip install spacy pandas numpy scikit-learn networkx PyPDF2 python-docx PyMuPDF pillow pytesseract
 # python -m spacy download en_core_web_sm
 # python -m spacy download en_core_web_lg  # For better word vectors
 
@@ -39,10 +48,124 @@ class MedicalEntity:
     cui: Optional[str] = None  # Concept Unique Identifier (if available)
     semantic_type: Optional[str] = None
     related_entities: List[str] = field(default_factory=list)
+    page_number: Optional[int] = None  # For multi-page documents
+    file_source: Optional[str] = None  # Source file name
+
+@dataclass
+class ProcessingResult:
+    """Container for processing results"""
+    entities: List[MedicalEntity]
+    text: str
+    metadata: Dict
+    processing_time: float
+    word_count: int
+    confidence_stats: Dict
+
+class FileProcessor:
+    """Enhanced file processing with better error handling and OCR support"""
+    
+    def __init__(self):
+        pass
+    
+    def process_file(self, file_path: Union[str, bytes, io.BytesIO], filename: Optional[str] = None) -> Tuple[str, Dict]:
+        """
+        Process a file (PDF, DOCX, or image) and extract text.
+        Returns the extracted text and metadata about the file.
+        """
+        text = ""
+        metadata = {}
+        
+        # Handle PDF files
+        if filename and filename.lower().endswith('.pdf'):
+            text = self._process_pdf(file_path)
+            metadata['file_type'] = 'pdf'
+        # Handle DOCX files
+        elif filename and filename.lower().endswith('.docx'):
+            text = self._process_docx(file_path)
+            metadata['file_type'] = 'docx'
+        # Handle image files
+        elif filename and any(filename.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg']):
+            text = self._process_image(file_path)
+            metadata['file_type'] = 'image'
+        # Handle text files or raw text
+        else:
+            text = self._process_text(file_path)
+            metadata['file_type'] = 'text'
+        
+        # Common metadata
+        metadata['filename'] = filename or "unknown"
+        metadata['text_length'] = len(text)
+        metadata['word_count'] = len(text.split())
+        
+        return text, metadata
+    
+    def _process_pdf(self, file_path: str) -> str:
+        """Extract text from PDF file using PyMuPDF and OCR if needed"""
+        text = ""
+        try:
+            # Use PyMuPDF for PDF processing
+            with fitz.open(file_path) as pdf_document:
+                for page in pdf_document:
+                    # Extract text from each page
+                    page_text = page.get_text()
+                    if page_text:
+                        text += page_text
+                    else:
+                        # If no text found, use OCR
+                        pix = page.get_pixmap()
+                        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                        ocr_text = pytesseract.image_to_string(img)
+                        text += ocr_text
+            
+            # Basic cleaning
+            text = re.sub(r'\s+', ' ', text)
+        except Exception as e:
+            print(f"Error processing PDF file {file_path}: {e}")
+        
+        return text
+    
+    def _process_docx(self, file_path: str) -> str:
+        """Extract text from DOCX file"""
+        text = ""
+        try:
+            doc = docx.Document(file_path)
+            for para in doc.paragraphs:
+                text += para.text + "\n"
+        except Exception as e:
+            print(f"Error processing DOCX file {file_path}: {e}")
+        
+        return text.strip()
+    
+    def _process_image(self, file_path: str) -> str:
+        """Extract text from image file using OCR"""
+        text = ""
+        try:
+            img = Image.open(file_path)
+            text = pytesseract.image_to_string(img)
+        except Exception as e:
+            print(f"Error processing image file {file_path}: {e}")
+        
+        return text
+    
+    def _process_text(self, file_path: Union[str, bytes, io.BytesIO]) -> str:
+        """Process raw text or text file"""
+        text = ""
+        try:
+            if isinstance(file_path, (bytes, io.BytesIO)):
+                # Bytes input (e.g., from an uploaded file)
+                text = file_path.read().decode('utf-8', errors='ignore')
+            else:
+                # Regular file path
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    text = file.read()
+        except Exception as e:
+            print(f"Error processing text input {file_path}: {e}")
+        
+        return text.strip()
 
 class EnhancedMedicalEntityExtractor:
     """
-    Advanced medical entity extraction system with improved accuracy
+    Advanced medical entity extraction system with file processing capabilities
     """
     
     def __init__(self, use_large_model: bool = False):
@@ -74,6 +197,9 @@ class EnhancedMedicalEntityExtractor:
         
         # Medical concept relationships
         self._initialize_concept_graph()
+        
+        # Initialize file processor
+        self.file_processor = FileProcessor()
     
     def _add_custom_components(self):
         """Add custom pipeline components for medical text processing"""
@@ -952,6 +1078,45 @@ class EnhancedMedicalEntityExtractor:
         
         return pd.DataFrame(data)
 
+    # Add a method to process either text or file
+    def process(self, input_data: Union[str, bytes, io.BytesIO], filename: Optional[str] = None) -> ProcessingResult:
+        """
+        Main entry point: accepts either raw text or a file, returns ProcessingResult.
+        """
+        start_time = datetime.now()
+        metadata = {}
+        text = ""
+        if filename or (isinstance(input_data, (bytes, io.BytesIO))):
+            # Assume file input
+            text, metadata = self.file_processor.process_file(input_data, filename=filename)
+        else:
+            # Assume direct text input
+            text = str(input_data)
+            metadata = {
+                'file_type': 'text',
+                'filename': None,
+                'processing_time': 0,
+                'text_length': len(text),
+                'word_count': len(text.split())
+            }
+        # Entity extraction
+        entities = self.extract_entities(text)
+        processing_time = (datetime.now() - start_time).total_seconds()
+        metadata['processing_time'] = processing_time
+        word_count = len(text.split())
+        confidence_stats = {
+            'high': sum(1 for e in entities if e.confidence >= 0.8),
+            'medium': sum(1 for e in entities if 0.5 <= e.confidence < 0.8),
+            'low': sum(1 for e in entities if e.confidence < 0.5)
+        }
+        return ProcessingResult(
+            entities=entities,
+            text=text,
+            metadata=metadata,
+            processing_time=processing_time,
+            word_count=word_count,
+            confidence_stats=confidence_stats
+        )
 
 # Example usage and testing
 def main():
@@ -1001,6 +1166,10 @@ def main():
     df = extractor.to_dataframe(entities)
     print("\nDataFrame shape:", df.shape)
     print(df.head())
+
+    # For file (example: PDF)
+    # result_file = extractor.process("path/to/file.pdf", filename="file.pdf")
+    # print("Entities from file:", result_file.entities)
 
 
 if __name__ == "__main__":
