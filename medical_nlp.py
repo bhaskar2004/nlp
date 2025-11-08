@@ -175,22 +175,33 @@ class EnhancedMedicalEntityExtractor:
         try:
             self.nlp = spacy.load(model_name)
         except Exception as e1:
+            # Try import the model package and load directly
             try:
-                import spacy.cli
-                spacy.cli.download(model_name)
-                self.nlp = spacy.load(model_name)
-            except Exception as e2:
-                # Final fallback to small model
+                import importlib
+                pkg = importlib.import_module(model_name.replace('-', '_'))
+                self.nlp = pkg.load()
+            except Exception as e1b:
                 try:
-                    fallback = "en_core_web_sm"
-                    if fallback != model_name:
-                        import spacy.cli
-                        spacy.cli.download(fallback)
-                    self.nlp = spacy.load(fallback)
-                except Exception as e3:
-                    # Last-resort fallback to a blank English pipeline
-                    print(f"Warning: Failed to load spaCy models ({e1}); download attempts failed ({e2}/{e3}). Using blank 'en' pipeline.")
-                    self.nlp = spacy.blank("en")
+                    import spacy.cli
+                    spacy.cli.download(model_name)
+                    self.nlp = spacy.load(model_name)
+                except Exception as e2:
+                    # Final fallback to small model
+                    try:
+                        fallback = "en_core_web_sm"
+                        if fallback != model_name:
+                            import spacy.cli
+                            spacy.cli.download(fallback)
+                        # Try package import first, then spacy.load
+                        try:
+                            import en_core_web_sm as en_sm
+                            self.nlp = en_sm.load()
+                        except Exception:
+                            self.nlp = spacy.load(fallback)
+                    except Exception as e3:
+                        # Last-resort fallback to a blank English pipeline
+                        print(f"Warning: Failed to load spaCy models ({e1}/{e1b}); download attempts failed ({e2}/{e3}). Using blank 'en' pipeline.")
+                        self.nlp = spacy.blank("en")
         
         # Add custom pipeline components
         self._add_custom_components()
