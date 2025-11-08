@@ -104,7 +104,7 @@ MedNLP is a clinical decision support tool designed to help healthcare professio
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/mednlp.git
+git clone [https://github.com/yourusername/mednlp.git](https://github.com/bhaskar2004/nlp.git)
 cd mednlp
 ```
 
