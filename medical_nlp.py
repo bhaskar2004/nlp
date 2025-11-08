@@ -171,11 +171,26 @@ class EnhancedMedicalEntityExtractor:
     def __init__(self, use_large_model: bool = False):
         # Load spaCy model (use large model for better accuracy)
         model_name = "en_core_web_lg" if use_large_model else "en_core_web_sm"
+        self.nlp = None
         try:
             self.nlp = spacy.load(model_name)
-        except OSError:
-            print(f"Model {model_name} not found. Falling back to en_core_web_sm")
-            self.nlp = spacy.load("en_core_web_sm")
+        except Exception as e1:
+            try:
+                import spacy.cli
+                spacy.cli.download(model_name)
+                self.nlp = spacy.load(model_name)
+            except Exception as e2:
+                # Final fallback to small model
+                try:
+                    fallback = "en_core_web_sm"
+                    if fallback != model_name:
+                        import spacy.cli
+                        spacy.cli.download(fallback)
+                    self.nlp = spacy.load(fallback)
+                except Exception as e3:
+                    # Last-resort fallback to a blank English pipeline
+                    print(f"Warning: Failed to load spaCy models ({e1}); download attempts failed ({e2}/{e3}). Using blank 'en' pipeline.")
+                    self.nlp = spacy.blank("en")
         
         # Add custom pipeline components
         self._add_custom_components()
