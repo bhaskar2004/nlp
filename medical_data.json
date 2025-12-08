@@ -110,10 +110,11 @@
             "sed rate"
         ],
         "vitamins": [
-            "vitamin d",
-            "b12",
-            "folate",
-            "iron",
+            "vitamin d level",
+            "25-hydroxy vitamin d",
+            "b12 level",
+            "folate level",
+            "iron level",
             "ferritin"
         ],
         "urine": [
@@ -488,6 +489,302 @@
         "encephalitis": [
             "brain inflammation",
             "viral encephalitis"
+        ],
+        "malaria": [
+            "plasmodium infection"
+        ],
+        "dengue": [
+            "dengue fever",
+            "breakbone fever"
+        ],
+        "zika": [
+            "zika virus"
+        ],
+        "ebola": [
+            "ebola virus disease"
+        ],
+        "cholera": [
+            "vibrio cholerae"
+        ],
+        "typhoid": [
+            "typhoid fever",
+            "salmonella typhi"
+        ],
+        "hashimoto thyroiditis": [
+            "hashimotos",
+            "chronic lymphocytic thyroiditis",
+            "hashimoto's thyroiditis",
+            "hashimoto's"
+        ],
+        "sjogren syndrome": [
+            "sjogrens",
+            "sicca syndrome"
+        ],
+        "psoriatic arthritis": [
+            "psa"
+        ],
+        "amyotrophic lateral sclerosis": [
+            "als",
+            "lou gehrig disease"
+        ],
+        "huntington disease": [
+            "huntingtons"
+        ],
+        "myasthenia gravis": [
+            "mg"
+        ],
+        "acne vulgaris": [
+            "acne",
+            "pimples"
+        ],
+        "rosacea": [
+            "acne rosacea"
+        ],
+        "melanoma": [
+            "malignant melanoma",
+            "skin cancer"
+        ],
+        "basal cell carcinoma": [
+            "bcc",
+            "skin cancer"
+        ]
+    },
+    "vaccines": {
+        "influenza": [
+            "flu shot",
+            "flu vaccine",
+            "influenza vaccine"
+        ],
+        "covid-19": [
+            "covid vaccine",
+            "pfizer",
+            "moderna",
+            "johnson & johnson",
+            "mrna vaccine"
+        ],
+        "tetanus": [
+            "tdap",
+            "dtap",
+            "tetanus shot"
+        ],
+        "hepatitis b": [
+            "hep b vaccine",
+            "hbv vaccine"
+        ],
+        "mmr": [
+            "measles mumps rubella",
+            "mmr vaccine"
+        ],
+        "pneumococcal": [
+            "pneumovax",
+            "prevnar",
+            "pneumonia vaccine"
+        ],
+        "shingles": [
+            "shingrix",
+            "zostavax"
+        ],
+        "hpv": [
+            "gardasil",
+            "human papillomavirus vaccine"
+        ]
+    },
+    "social_determinants": {
+        "housing": [
+            "homeless",
+            "homelessness",
+            "housing instability",
+            "shelter"
+        ],
+        "employment": [
+            "unemployed",
+            "job loss",
+            "disability",
+            "retired"
+        ],
+        "education": [
+            "illiteracy",
+            "low literacy",
+            "education level"
+        ],
+        "transportation": [
+            "lack of transportation",
+            "no car",
+            "bus"
+        ],
+        "food_security": [
+            "food insecurity",
+            "hunger",
+            "food stamps",
+            "snap"
+        ],
+        "social_support": [
+            "living alone",
+            "social isolation",
+            "no support system"
+        ],
+        "financial": [
+            "poverty",
+            "financial strain",
+            "low income",
+            "medicaid"
+        ]
+    },
+    "substances": {
+        "tobacco": [
+            "cigarettes",
+            "smoking",
+            "chewing tobacco",
+            "vaping"
+        ],
+        "alcohol": [
+            "ethanol",
+            "drinking",
+            "alcoholism",
+            "etoh"
+        ],
+        "marijuana": [
+            "cannabis",
+            "thc",
+            "pot",
+            "weed"
+        ],
+        "cocaine": [
+            "coke",
+            "crack"
+        ],
+        "opioids": [
+            "heroin",
+            "fentanyl",
+            "oxycodone",
+            "hydrocodone",
+            "methadone"
+        ],
+        "methamphetamine": [
+            "meth",
+            "crystal meth"
+        ],
+        "benzodiazepines": [
+            "benzos",
+            "xanax",
+            "valium"
+        ]
+    },
+    "medical_devices": {
+        "pacemaker": [
+            "cardiac pacemaker",
+            "ppm"
+        ],
+        "stent": [
+            "coronary stent",
+            "drug-eluting stent",
+            "bare-metal stent"
+        ],
+        "implantable cardioverter defibrillator": [
+            "icd",
+            "defibrillator"
+        ],
+        "cpap": [
+            "continuous positive airway pressure",
+            "cpap machine"
+        ],
+        "insulin pump": [
+            "insulin infusion pump"
+        ],
+        "hearing aid": [
+            "cochlear implant"
+        ],
+        "joint replacement": [
+            "knee replacement",
+            "hip replacement",
+            "arthroplasty"
+        ],
+        "catheter": [
+            "foley",
+            "central line",
+            "picc line",
+            "iv line"
+        ]
+    },
+    "lifestyle_factors": {
+        "smoking": [
+            "tobacco use",
+            "smoker",
+            "cigarettes",
+            "vaping",
+            "nicotine"
+        ],
+        "alcohol": [
+            "etoh",
+            "alcohol consumption",
+            "drinking",
+            "alcoholism"
+        ],
+        "exercise": [
+            "physical activity",
+            "sedentary",
+            "workout",
+            "gym"
+        ],
+        "diet": [
+            "vegetarian",
+            "vegan",
+            "keto",
+            "low sodium",
+            "diabetic diet"
+        ],
+        "substance use": [
+            "drug use",
+            "illicit drugs"
+        ]
+    },
+    "dietary_supplements": {
+        "multivitamin": [
+            "mvi",
+            "daily vitamin"
+        ],
+        "vitamin d": [
+            "cholecalciferol",
+            "ergocalciferol"
+        ],
+        "calcium": [
+            "calcium carbonate",
+            "calcium citrate"
+        ],
+        "fish oil": [
+            "omega-3",
+            "fatty acids"
+        ],
+        "probiotics": [
+            "acidophilus",
+            "lactobacillus"
+        ],
+        "iron": [
+            "ferrous sulfate",
+            "ferrous gluconate"
+        ],
+        "magnesium": [
+            "magnesium oxide",
+            "magnesium citrate"
+        ]
+    },
+    "genetic_info": {
+        "brca": [
+            "brca1",
+            "brca2",
+            "breast cancer gene"
+        ],
+        "factor v leiden": [
+            "factor 5 leiden"
+        ],
+        "mthfr": [
+            "methylenetetrahydrofolate reductase"
+        ],
+        "apo e": [
+            "apolipoprotein e"
+        ],
+        "hla": [
+            "human leukocyte antigen"
         ]
     },
     "symptoms": {
@@ -562,7 +859,8 @@
             "rapid heartbeat",
             "tachycardia",
             "irregular heartbeat",
-            "heart fluttering"
+            "heart fluttering",
+            "skipping beats"
         ],
         "swelling": [
             "edema",
@@ -577,7 +875,9 @@
             "skin irritation",
             "erythema",
             "hives",
-            "urticaria"
+            "urticaria",
+            "itching",
+            "pruritus"
         ],
         "joint pain": [
             "arthralgia",
@@ -597,7 +897,9 @@
             "dry cough",
             "persistent cough",
             "chronic cough",
-            "hemoptysis"
+            "hemoptysis",
+            "phlegm",
+            "sputum"
         ],
         "wheezing": [
             "bronchospasm",
@@ -909,8 +1211,7 @@
         ],
         "amoxicillin": [
             "amoxil",
-            "antibiotic",
-            "penicillin"
+            "antibiotic"
         ],
         "azithromycin": [
             "zithromax",
@@ -1036,6 +1337,61 @@
             "lovenox",
             "low molecular weight heparin",
             "lmwh"
+        ],
+        "ceftriaxone": [
+            "rocephin",
+            "antibiotic",
+            "cephalosporin"
+        ],
+        "vancomycin": [
+            "vancocin",
+            "antibiotic",
+            "vanc"
+        ],
+        "piperacillin-tazobactam": [
+            "zosyn",
+            "antibiotic",
+            "pip-tazo"
+        ],
+        "acyclovir": [
+            "zovirax",
+            "antiviral"
+        ],
+        "valacyclovir": [
+            "valtrex",
+            "antiviral"
+        ],
+        "oseltamivir": [
+            "tamiflu",
+            "antiviral"
+        ],
+        "fluconazole": [
+            "diflucan",
+            "antifungal"
+        ],
+        "nystatin": [
+            "antifungal",
+            "mycostatin"
+        ],
+        "bupropion": [
+            "wellbutrin",
+            "antidepressant"
+        ],
+        "quetiapine": [
+            "seroquel",
+            "antipsychotic"
+        ],
+        "olanzapine": [
+            "zyprexa",
+            "antipsychotic"
+        ],
+        "hydralazine": [
+            "apresoline",
+            "vasodilator"
+        ],
+        "isosorbide mononitrate": [
+            "imdur",
+            "nitrate"
         ],
         "vancomycin": [
             "vancocin",
@@ -1301,7 +1657,7 @@
             "cancer antigen",
             "ovarian tumor marker"
         ],
-        "vitamin d": [
+        "vitamin d test": [
             "25-hydroxyvitamin d",
             "vitamin d level"
         ],
@@ -1637,6 +1993,139 @@
         ]
     },
     "anatomical_locations": {
+        "head": [
+            "skull",
+            "scalp",
+            "face",
+            "forehead"
+        ],
+        "neck": [
+            "cervical spine",
+            "throat",
+            "thyroid"
+        ],
+        "chest": [
+            "thorax",
+            "pectoral",
+            "sternum",
+            "ribs"
+        ],
+        "abdomen": [
+            "stomach",
+            "belly",
+            "epigastrium",
+            "umbilicus"
+        ],
+        "back": [
+            "spine",
+            "vertebrae",
+            "lumbar",
+            "thoracic",
+            "sacrum"
+        ],
+        "pelvis": [
+            "hip",
+            "groin",
+            "pubic area"
+        ],
+        "arm": [
+            "upper arm",
+            "humerus",
+            "bicep",
+            "tricep"
+        ],
+        "elbow": [
+            "antecubital fossa",
+            "olecranon"
+        ],
+        "forearm": [
+            "radius",
+            "ulna"
+        ],
+        "wrist": [
+            "carpal",
+            "distal radius"
+        ],
+        "hand": [
+            "palm",
+            "fingers",
+            "metacarpal",
+            "digits"
+        ],
+        "leg": [
+            "thigh",
+            "femur",
+            "quadriceps",
+            "hamstring"
+        ],
+        "knee": [
+            "patella",
+            "meniscus",
+            "acl",
+            "pcl"
+        ],
+        "lower_leg": [
+            "calf",
+            "tibia",
+            "fibula",
+            "shin"
+        ],
+        "ankle": [
+            "malleolus",
+            "tarsal"
+        ],
+        "foot": [
+            "toes",
+            "metatarsal",
+            "heel",
+            "plantar"
+        ],
+        "heart": [
+            "cardiac",
+            "atrium",
+            "ventricle",
+            "aorta",
+            "valve"
+        ],
+        "lung": [
+            "pulmonary",
+            "bronchi",
+            "lobe",
+            "pleura"
+        ],
+        "brain": [
+            "cerebrum",
+            "cerebellum",
+            "brainstem",
+            "frontal lobe"
+        ],
+        "liver": [
+            "hepatic",
+            "right upper quadrant"
+        ],
+        "kidney": [
+            "renal",
+            "flank"
+        ],
+        "stomach": [
+            "gastric",
+            "pylorus"
+        ],
+        "intestine": [
+            "bowel",
+            "colon",
+            "small intestine",
+            "large intestine"
+        ],
+        "bladder": [
+            "urinary bladder",
+            "vesical"
+        ],
+        "skin": [
+            "dermis",
+            "epidermis",
+            "cutaneous"
+        ],
         "upper": [
             "superior",
             "proximal",
@@ -1756,6 +2245,37 @@
         ]
     },
     "allergy_terms": {
+        "penicillin": [
+            "pcn",
+            "amoxicillin allergy"
+        ],
+        "sulfa": [
+            "sulfonamide",
+            "bactrim allergy"
+        ],
+        "latex": [
+            "rubber allergy"
+        ],
+        "peanuts": [
+            "nut allergy"
+        ],
+        "shellfish": [
+            "shrimp allergy",
+            "crab allergy"
+        ],
+        "contrast_dye": [
+            "iodine allergy",
+            "ct dye allergy"
+        ],
+        "aspirin": [
+            "asa allergy",
+            "nsaid allergy"
+        ],
+        "seasonal": [
+            "pollen",
+            "hay fever",
+            "ragweed"
+        ],
         "allergy": [
             "allergic",
             "hypersensitivity",
@@ -1840,6 +2360,29 @@
             "grandmother",
             "grandfather",
             "grandparents"
+        ],
+        "aunt": [
+            "maternal aunt",
+            "paternal aunt"
+        ],
+        "uncle": [
+            "maternal uncle",
+            "paternal uncle"
+        ],
+        "cousin": [
+            "first cousin"
+        ],
+        "cancer_history": [
+            "family history of cancer",
+            "fhx cancer"
+        ],
+        "heart_history": [
+            "family history of heart disease",
+            "fhx mi"
+        ],
+        "diabetes_history": [
+            "family history of diabetes",
+            "fhx dm"
         ]
     },
     "procedures": {
@@ -2153,6 +2696,7 @@
         ],
         "escherichia coli": [
             "e coli",
+            "e. coli",
             "ecoli"
         ],
         "pseudomonas": [

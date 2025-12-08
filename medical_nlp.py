@@ -291,6 +291,15 @@ class EnhancedMedicalEntityExtractor:
             self.negations = self.medical_data.get('negations', {})
             self.abbreviations = self.medical_data.get('abbreviations', {}) # Ensure abbreviations are loaded
             
+            # New categories
+            self.vaccines = self.medical_data.get('vaccines', {})
+            self.medical_devices = self.medical_data.get('medical_devices', {})
+            self.lifestyle_factors = self.medical_data.get('lifestyle_factors', {})
+            self.dietary_supplements = self.medical_data.get('dietary_supplements', {})
+            self.genetic_info = self.medical_data.get('genetic_info', {})
+            self.social_determinants = self.medical_data.get('social_determinants', {})
+            self.substances = self.medical_data.get('substances', {})
+            
         except FileNotFoundError:
             logger.warning(f"medical_data.json not found at {json_path}. Initializing with empty medical data.")
             self.medical_data = defaultdict(dict)
@@ -321,6 +330,14 @@ class EnhancedMedicalEntityExtractor:
             self.status_descriptors = {}
             self.negations = {}
             self.abbreviations = {}
+            self.vaccines = {}
+            self.medical_devices = {}
+            self.lifestyle_factors = {}
+            self.dietary_supplements = {}
+            self.dietary_supplements = {}
+            self.genetic_info = {}
+            self.social_determinants = {}
+            self.substances = {}
         except json.JSONDecodeError as e:
             logger.error(f"Error decoding medical_data.json: {e}. Initializing with empty medical data.")
             self.medical_data = defaultdict(dict)
@@ -388,10 +405,19 @@ class EnhancedMedicalEntityExtractor:
             'SYMPTOM': self.symptoms,
             'MEDICATION': self.medications,
             'TEST': self.tests,
-            'BODY_PART': self.body_parts,
+            'TEST': self.tests,
+            'BODY_PART': {**self.body_parts, **self.anatomical_locations},
             'PROCEDURE': self.procedures,
             'CLINICAL_FINDING': self.clinical_findings,
-            'MICROORGANISM': self.microorganisms
+            'MICROORGANISM': self.microorganisms,
+            'VACCINE': self.vaccines,
+            'MEDICAL_DEVICE': self.medical_devices,
+            'LIFESTYLE': self.lifestyle_factors,
+            'SUPPLEMENT': self.dietary_supplements,
+            'GENETIC': self.genetic_info,
+            'SDOH': self.social_determinants,
+            'SUBSTANCE': self.substances,
+            'ALLERGY': self.allergy_terms
         }
         
         for category, terms_dict in categories.items():
@@ -750,10 +776,18 @@ class EnhancedMedicalEntityExtractor:
             ('SYMPTOM', self.symptoms),
             ('MEDICATION', self.medications),
             ('TEST', self.tests),
-            ('BODY_PART', self.body_parts),
+            ('BODY_PART', {**self.body_parts, **self.anatomical_locations}),
             ('PROCEDURE', self.procedures),
             ('CLINICAL_FINDING', self.clinical_findings),
-            ('MICROORGANISM', self.microorganisms)
+            ('MICROORGANISM', self.microorganisms),
+            ('VACCINE', self.vaccines),
+            ('MEDICAL_DEVICE', self.medical_devices),
+            ('LIFESTYLE', self.lifestyle_factors),
+            ('SUPPLEMENT', self.dietary_supplements),
+            ('GENETIC', self.genetic_info),
+            ('SDOH', self.social_determinants),
+            ('SUBSTANCE', self.substances),
+            ('ALLERGY', self.allergy_terms)
         ]
         
         for category, terms_dict in categories_to_normalize:
@@ -782,7 +816,7 @@ class EnhancedMedicalEntityExtractor:
         """Initialize TF-IDF vectorizer for semantic similarity"""
         # Combine all medical terms for TF-IDF
         all_medical_terms = []
-        for category_dict in [self.diseases, self.symptoms, self.medications, self.tests, self.body_parts, self.procedures, self.clinical_findings, self.microorganisms]:
+        for category_dict in [self.diseases, self.symptoms, self.medications, self.tests, self.body_parts, self.procedures, self.clinical_findings, self.microorganisms, self.vaccines, self.medical_devices, self.lifestyle_factors, self.dietary_supplements, self.genetic_info, self.social_determinants, self.substances, self.allergy_terms]:
             for main_term, synonyms in category_dict.items():
                 all_medical_terms.append(main_term)
                 all_medical_terms.extend(synonyms)
