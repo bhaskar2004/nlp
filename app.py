@@ -1,5 +1,13 @@
 import streamlit as st
 import pandas as pd
+import spacy
+import numpy as np
+import base64
+import time
+import json
+import networkx as nx
+import matplotlib.pyplot as plt
+from collections import Counter
 from medical_nlp import EnhancedMedicalEntityExtractor
 from riskAnalytics import (
     MedicalRiskAnalyzer,
@@ -7,6 +15,7 @@ from riskAnalytics import (
     create_condition_card_html,
     create_recommendation_card_html,
 )
+from report_generator import MedicalReportGenerator
 import io
 import PyPDF2
 import docx
@@ -652,6 +661,13 @@ def load_risk_analyzer():
 
 risk_analyzer = load_risk_analyzer()
 
+# --- Initialize the report generator ---
+@st.cache_resource
+def load_report_generator():
+    return MedicalReportGenerator()
+
+report_generator = load_report_generator()
+
 # --- Helper Functions ---
 def extract_text_from_pdf(file):
     try:
@@ -949,6 +965,32 @@ def show_results_page():
     if st.session_state.entities:
         df = extractor.to_dataframe(st.session_state.entities)
         
+        # --- Clinical Summary Section ---
+        insights = risk_analyzer.generate_user_insights(st.session_state.entities)
+        if insights:
+            badge_color = insights.get('risk_color', '#7B8794')
+            st.markdown(f"""
+                <div style='background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
+                     border: 1px solid #E8ECF0; border-left: 5px solid {badge_color}; 
+                     padding: 24px; border-radius: 12px; margin-bottom: 32px; 
+                     box-shadow: 0 2px 4px rgba(0,0,0,0.04);'>
+                    <div style='display:flex; align-items:center; gap:12px; margin-bottom: 12px;'>
+                        <span style='background:{badge_color}; color:white; padding:4px 12px; 
+                             border-radius:16px; font-size:12px; font-weight:700; letter-spacing:0.5px;'>CLINICAL SUMMARY</span>
+                        <span style='color: #7B8794; font-size: 14px; font-weight: 500;'>Risk Score: {insights.get('overall_risk', 0)}/10</span>
+                    </div>
+                    <h3 style='color:#1F2933; font-size:20px; margin: 0 0 8px 0; font-weight: 600; line-height: 1.4;'>
+                        {insights.get('headline','No summary available')}
+                    </h3>
+                    <p style='color: #52606D; font-size: 15px; margin: 0; line-height: 1.6;'>
+                        Patient presents with <strong>{len(st.session_state.entities)}</strong> identified clinical entities. 
+                        Primary areas of concern include <strong>{len(insights.get('key_findings', {}).get('conditions', []))}</strong> conditions 
+                        and <strong>{len(insights.get('key_findings', {}).get('risk_factors', []))}</strong> risk factors.
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+        # --------------------------------
+
         # Summary Statistics
         st.markdown("### 📈 Analysis Summary")
         col1, col2, col3, col4 = st.columns(4)
@@ -1088,6 +1130,19 @@ def show_results_page():
             if st.button("📊 View Clinical Insights", width='stretch', type="primary"):
                 st.session_state.current_page = 'insights'
                 st.rerun()
+        
+        st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
+        
+        # PDF Report Download
+        if st.button("📄 Download Professional PDF Report", width='stretch'):
+            with st.spinner("Generating PDF Report..."):
+                # Generate analysis for the report
+                analysis = risk_analyzer.generate_comprehensive_analysis(st.session_state.entities)
+                pdf_bytes = report_generator.generate_report(st.session_state.entities, analysis)
+                
+                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                href = f'<a href="data:application/pdf;base64,{b64_pdf}" download="MedNLP_Clinical_Report.pdf" style="text-decoration:none; color:white; background-color:#4CAF50; padding:10px 20px; border-radius:5px; display:block; text-align:center;">Click here to Download PDF</a>'
+                st.markdown(href, unsafe_allow_html=True)
     
     else:
         st.markdown("""

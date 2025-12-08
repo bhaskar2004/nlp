@@ -8,6 +8,14 @@ from dataclasses import dataclass
 from collections import defaultdict, Counter
 import re
 from medical_nlp import MedicalEntity
+import html
+import json
+import os
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+
 
 # Add matplotlib imports for graph generation
 import matplotlib.pyplot as plt
@@ -60,200 +68,59 @@ class MedicalRiskAnalyzer:
     """
 
     def __init__(self):
+        self.risk_scores = {}
+        self.identified_risks = []
+        self.recommendations = []
+        self.load_medical_data()
+
         # Enhanced risk scoring weights with clinical relevance
-        self.risk_weights = {
-            'DISEASE': 1.0,
-            'CONDITION': 0.9,
-            'SYMPTOM': 0.6,
-            'MEDICATION': 0.5,
-            'TEST': 0.3,
-            'PROCEDURE': 0.4,
-            'BODY_PART': 0.2,
-            'TREATMENT': 0.5,
-            'DIAGNOSIS': 1.0,
-            # New enriched labels (tolerant defaults)
-            'CLINICAL_FINDING': 0.5,
-            'IMAGING': 0.3,
-            'IMAGING_FINDING': 0.4,
-            'LAB': 0.3,
-            'LAB_TEST': 0.3,
-            'MICROORGANISM': 0.4,
-            'ALLERGY': 0.2,
-            'FAMILY_HISTORY': 0.2,
-            'SOCIAL_HISTORY': 0.2,
-            'VITAL': 0.3,
-        }
+        self.risk_weights = self.medical_data.get('risk_weights', {})
 
         # Comprehensive high-risk conditions with clinical severity scores
-        self.high_risk_conditions = {
-            # Critical Cardiac Conditions
-            'myocardial infarction': {'score': 95, 'category': 'cardiac', 'urgency': 'critical'},
-            'heart failure': {'score': 90, 'category': 'cardiac', 'urgency': 'high'},
-            'cardiac arrest': {'score': 98, 'category': 'cardiac', 'urgency': 'critical'},
-            'ventricular fibrillation': {'score': 96, 'category': 'cardiac', 'urgency': 'critical'},
-            'unstable angina': {'score': 88, 'category': 'cardiac', 'urgency': 'high'},
-            'cardiogenic shock': {'score': 94, 'category': 'cardiac', 'urgency': 'critical'},
-            'atrial fibrillation': {'score': 75, 'category': 'cardiac', 'urgency': 'moderate'},
-            
-            # Cerebrovascular
-            'stroke': {'score': 93, 'category': 'cerebrovascular', 'urgency': 'critical'},
-            'hemorrhagic stroke': {'score': 95, 'category': 'cerebrovascular', 'urgency': 'critical'},
-            'ischemic stroke': {'score': 92, 'category': 'cerebrovascular', 'urgency': 'critical'},
-            'transient ischemic attack': {'score': 82, 'category': 'cerebrovascular', 'urgency': 'high'},
-            'subarachnoid hemorrhage': {'score': 96, 'category': 'cerebrovascular', 'urgency': 'critical'},
-            
-            # Respiratory
-            'pneumonia': {'score': 78, 'category': 'respiratory', 'urgency': 'high'},
-            'acute respiratory distress': {'score': 91, 'category': 'respiratory', 'urgency': 'critical'},
-            'pulmonary embolism': {'score': 90, 'category': 'respiratory', 'urgency': 'critical'},
-            'copd': {'score': 76, 'category': 'respiratory', 'urgency': 'moderate'},
-            'asthma': {'score': 65, 'category': 'respiratory', 'urgency': 'moderate'},
-            'respiratory failure': {'score': 93, 'category': 'respiratory', 'urgency': 'critical'},
-            
-            # Infections/Sepsis
-            'sepsis': {'score': 94, 'category': 'infectious', 'urgency': 'critical'},
-            'septic shock': {'score': 97, 'category': 'infectious', 'urgency': 'critical'},
-            'meningitis': {'score': 89, 'category': 'infectious', 'urgency': 'critical'},
-            'encephalitis': {'score': 88, 'category': 'infectious', 'urgency': 'critical'},
-            
-            # Oncological
-            'cancer': {'score': 85, 'category': 'oncological', 'urgency': 'high'},
-            'metastatic cancer': {'score': 95, 'category': 'oncological', 'urgency': 'critical'},
-            'malignant tumor': {'score': 88, 'category': 'oncological', 'urgency': 'high'},
-            'carcinoma': {'score': 86, 'category': 'oncological', 'urgency': 'high'},
-            'lymphoma': {'score': 84, 'category': 'oncological', 'urgency': 'high'},
-            'leukemia': {'score': 87, 'category': 'oncological', 'urgency': 'high'},
-            
-            # Metabolic/Endocrine
-            'diabetes': {'score': 72, 'category': 'metabolic', 'urgency': 'moderate'},
-            'diabetic ketoacidosis': {'score': 90, 'category': 'metabolic', 'urgency': 'critical'},
-            'hypoglycemia': {'score': 75, 'category': 'metabolic', 'urgency': 'high'},
-            'thyroid storm': {'score': 92, 'category': 'endocrine', 'urgency': 'critical'},
-            'adrenal crisis': {'score': 93, 'category': 'endocrine', 'urgency': 'critical'},
-            
-            # Renal
-            'kidney failure': {'score': 85, 'category': 'renal', 'urgency': 'high'},
-            'acute kidney injury': {'score': 88, 'category': 'renal', 'urgency': 'high'},
-            'chronic kidney disease': {'score': 78, 'category': 'renal', 'urgency': 'moderate'},
-            'renal failure': {'score': 86, 'category': 'renal', 'urgency': 'high'},
-            
-            # Hepatic
-            'liver failure': {'score': 89, 'category': 'hepatic', 'urgency': 'critical'},
-            'cirrhosis': {'score': 80, 'category': 'hepatic', 'urgency': 'high'},
-            'hepatic encephalopathy': {'score': 87, 'category': 'hepatic', 'urgency': 'high'},
-            
-            # Hematological
-            'hemorrhage': {'score': 86, 'category': 'hematological', 'urgency': 'critical'},
-            'anemia': {'score': 60, 'category': 'hematological', 'urgency': 'moderate'},
-            'thrombocytopenia': {'score': 74, 'category': 'hematological', 'urgency': 'moderate'},
-            'coagulopathy': {'score': 82, 'category': 'hematological', 'urgency': 'high'},
-            
-            # Chronic Conditions
-            'hypertension': {'score': 68, 'category': 'cardiovascular', 'urgency': 'moderate'},
-            'hyperlipidemia': {'score': 62, 'category': 'metabolic', 'urgency': 'moderate'},
-            'obesity': {'score': 58, 'category': 'metabolic', 'urgency': 'low'},
-        }
+        self.high_risk_conditions = self.medical_data.get('high_risk_conditions', {})
 
         # Enhanced risk factor definitions with clinical categories
-        self.risk_factor_definitions = {
-            'Cardiovascular Risk': {
-                'keywords': ['myocardial infarction', 'heart failure', 'hypertension', 'cholesterol', 
-                            'arrhythmia', 'angina', 'cardiac', 'coronary', 'valve disease', 'cardiomyopathy'],
-                'weight': 1.2
-            },
-            'Respiratory Risk': {
-                'keywords': ['pneumonia', 'copd', 'asthma', 'respiratory failure', 'pulmonary embolism',
-                            'dyspnea', 'hypoxia', 'lung disease', 'bronchitis'],
-                'weight': 1.1
-            },
-            'Metabolic Risk': {
-                'keywords': ['diabetes', 'hyperglycemia', 'insulin resistance', 'obesity', 'metabolic syndrome',
-                            'hyperlipidemia', 'thyroid', 'ketoacidosis'],
-                'weight': 0.9
-            },
-            'Neurological Risk': {
-                'keywords': ['stroke', 'seizure', 'neurological deficit', 'headache', 'migraine',
-                            'encephalopathy', 'neuropathy', 'dementia', 'parkinson'],
-                'weight': 1.1
-            },
-            'Oncological Risk': {
-                'keywords': ['cancer', 'tumor', 'malignancy', 'carcinoma', 'metastasis', 'neoplasm',
-                            'lymphoma', 'leukemia', 'sarcoma'],
-                'weight': 1.3
-            },
-            'Infectious Risk': {
-                'keywords': ['sepsis', 'infection', 'pneumonia', 'meningitis', 'bacteremia',
-                            'viral', 'bacterial', 'fungal', 'abscess'],
-                'weight': 1.2
-            },
-            'Renal Risk': {
-                'keywords': ['kidney failure', 'renal', 'dialysis', 'acute kidney injury',
-                            'chronic kidney disease', 'nephropathy', 'uremia'],
-                'weight': 1.0
-            },
-            'Hepatic Risk': {
-                'keywords': ['liver failure', 'cirrhosis', 'hepatitis', 'hepatic',
-                            'jaundice', 'ascites', 'encephalopathy'],
-                'weight': 1.0
-            }
-        }
+        self.risk_factor_definitions = self.medical_data.get('risk_factor_definitions', {})
 
         # Critical symptom patterns that elevate risk
-        self.critical_symptoms = {
-            'chest pain': 85,
-            'shortness of breath': 80,
-            'altered mental status': 88,
-            'severe pain': 75,
-            'loss of consciousness': 92,
-            'difficulty breathing': 85,
-            'confusion': 78,
-            'severe headache': 80,
-            'hemoptysis': 86,
-            'syncope': 82
-        }
+        self.critical_symptoms = self.medical_data.get('critical_symptoms', {})
 
         # Medication risk indicators
-        self.high_risk_medications = {
-            'chemotherapy': 0.8,
-            'immunosuppressant': 0.7,
-            'anticoagulant': 0.6,
-            'insulin': 0.5,
-            'opioid': 0.5,
-            'corticosteroid': 0.4
-        }
+        self.high_risk_medications = self.medical_data.get('high_risk_medications', {})
 
         # Comorbidity interaction patterns
-        self.comorbidity_multipliers = {
-            ('diabetes', 'hypertension'): 1.4,
-            ('heart failure', 'kidney disease'): 1.5,
-            ('copd', 'heart failure'): 1.4,
-            ('diabetes', 'kidney disease'): 1.5,
-            ('cancer', 'diabetes'): 1.3,
-            ('stroke', 'atrial fibrillation'): 1.4,
-        }
+        # Parse string keys "condition1|condition2" back to tuples ('condition1', 'condition2')
+        raw_multipliers = self.medical_data.get('comorbidity_multipliers', {})
+        self.comorbidity_multipliers = {}
+        for key, value in raw_multipliers.items():
+            if '|' in key:
+                parts = tuple(key.split('|'))
+                self.comorbidity_multipliers[parts] = value
+            else:
+                # Handle potential legacy format or single keys if any (though unlikely for pairs)
+                self.comorbidity_multipliers[key] = value
 
         # Normal/healthy indicators (more comprehensive)
-        self.normal_indicators = {
-            'normal': 0.4,
-            'stable': 0.5,
-            'unremarkable': 0.5,
-            'within normal limits': 0.7,
-            'within normal range': 0.7,
-            'no acute distress': 0.6,
-            'clear': 0.5,
-            'regular': 0.4,
-            'healthy': 0.8,
-            'good general health': 0.9,
-            'well-controlled': 0.6,
-            'asymptomatic': 0.7,
-            'resolved': 0.8,
-            'improved': 0.6,
-            'optimal': 0.7,
-            'negative': 0.6,
-            'absent': 0.6,
-            'no evidence of': 0.6,
-            'ruled out': 0.7
-        }
+        self.normal_indicators = self.medical_data.get('normal_indicators', {})
+
+    def load_medical_data(self):
+        """Load medical data from JSON file"""
+        try:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            json_path = os.path.join(current_dir, 'medical_data.json')
+            
+            with open(json_path, 'r') as f:
+                self.medical_data = json.load(f)
+                
+            # Initialize risk factors and conditions from JSON or fallback
+            self.risk_factors_data = self.medical_data.get('risk_factors', {})
+            self.conditions_data = self.medical_data.get('diseases', {})
+            
+        except Exception as e:
+            logger.error(f"Error loading medical data in RiskAnalyzer: {e}")
+            self.medical_data = {} # Ensure medical_data is initialized even on error
+            self.risk_factors_data = {}
+            self.conditions_data = {}
 
     def generate_comprehensive_analysis(self, entities: List[MedicalEntity]) -> Dict[str, Any]:
         """
@@ -403,13 +270,7 @@ class MedicalRiskAnalyzer:
 
     # ===== Enriched extraction helpers (keyword-based, label-tolerant) =====
     def _extract_vital_signs(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = [
-            'blood pressure', 'bp', 'systolic', 'diastolic',
-            'heart rate', 'hr', 'pulse', 'bpm',
-            'respiratory rate', 'rr',
-            'temperature', 'temp', 'fever', 'afebrile',
-            'oxygen saturation', 'spo2', 'o2 sat', 'pulse ox', 'saturation'
-        ]
+        keywords = self.medical_data.get('vital_sign_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -418,13 +279,7 @@ class MedicalRiskAnalyzer:
         return out
 
     def _extract_lab_tests(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = [
-            'cbc', 'complete blood count', 'cmp', 'metabolic panel', 'bmp', 'lipid panel',
-            'lfts', 'hepatic panel', 'renal function', 'bun', 'creatinine', 'gfr', 'egfr',
-            'bnp', 'troponin', 'hba1c', 'a1c', 'tsh', 'free t4', 'free t3', 'psa', 'urinalysis', 'ua',
-            'urine culture', 'blood culture', 'sputum culture', 'd-dimer', 'esr', 'crp', 'rf', 'ana',
-            'vitamin d', 'vitamin b12', 'folate', 'iron', 'ferritin', 'tibc'
-        ]
+        keywords = self.medical_data.get('lab_test_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -433,7 +288,7 @@ class MedicalRiskAnalyzer:
         return out
 
     def _extract_allergies(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = ['allergy', 'allergic', 'hypersensitivity', 'anaphylaxis', 'adverse reaction', 'side effect']
+        keywords = self.medical_data.get('allergy_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -442,7 +297,7 @@ class MedicalRiskAnalyzer:
         return out
 
     def _extract_social_history(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = ['smoking', 'tobacco', 'cigarette', 'pack years', 'alcohol', 'etoh', 'drug', 'exercise', 'occupation']
+        keywords = self.medical_data.get('social_history_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -451,7 +306,7 @@ class MedicalRiskAnalyzer:
         return out
 
     def _extract_family_history(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = ['family history', 'maternal', 'paternal', 'sibling', 'grandparent', 'hereditary', 'genetic']
+        keywords = self.medical_data.get('family_history_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -460,7 +315,7 @@ class MedicalRiskAnalyzer:
         return out
 
     def _extract_imaging_findings(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = ['x-ray', 'cxr', 'ct', 'mri', 'ultrasound', 'echocardiogram', 'echo', 'angiography', 'mass', 'lesion', 'nodule', 'consolidation', 'atelectasis', 'pneumothorax']
+        keywords = self.medical_data.get('imaging_finding_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -469,7 +324,7 @@ class MedicalRiskAnalyzer:
         return out
 
     def _extract_microorganisms(self, entities: List[MedicalEntity]) -> List[Dict[str, Any]]:
-        keywords = ['bacteria', 'viral', 'fungal', 'parasite', 'staph', 'mrsa', 'strep', 'pseudomonas', 'clostridium', 'c diff', 'tuberculosis', 'candida', 'influenza', 'covid', 'herpes', 'hepatitis']
+        keywords = self.medical_data.get('microorganism_keywords', [])
         out = []
         for e in entities:
             t = e.text.lower()
@@ -1400,14 +1255,14 @@ def create_risk_progress_bar_html(risk_factor: RiskFactor) -> str:
     return f"""
     <div style="margin-bottom: 1rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <h4 style="margin: 0; color: #1f2937; font-weight: 600;">{risk_factor.name}</h4>
+            <h4 style="margin: 0; color: #1f2937; font-weight: 600;">{html.escape(risk_factor.name)}</h4>
             <span style="color: {color}; font-weight: 700; font-size: 18px;">{risk_factor.percentage}%</span>
         </div>
         <div style="width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; margin-bottom: 0.5rem; overflow: hidden;">
             <div style="width: {risk_factor.percentage}%; height: 100%; background: {color}; border-radius: 5px; transition: width 0.3s ease;"></div>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-            <small style="color: #6b7280;">{risk_factor.description}</small>
+            <small style="color: #6b7280;">{html.escape(risk_factor.description)}</small>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 1.2rem;">{icon}</span>
                 <span style="background: {color}20; color: {color}; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">{risk_factor.risk_level}</span>
@@ -1422,7 +1277,7 @@ def create_condition_card_html(condition: CommonCondition) -> str:
 
     return f"""
     <div style="margin: 0.5rem; padding: 1.2rem; border: 1px solid #e2e8f0; border-radius: 10px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-        <h5 style="margin: 0 0 0.8rem 0; color: #1f2937; font-weight: 600; font-size: 15px;">{condition.name}</h5>
+        <h5 style="margin: 0 0 0.8rem 0; color: #1f2937; font-weight: 600; font-size: 15px;">{html.escape(condition.name)}</h5>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <span style="color: #6b7280; font-size: 13px;">Occurrences: <strong>{condition.cases}</strong></span>
             <span style="background: {color}; color: white; padding: 3px 10px; border-radius: 12px; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">{condition.risk_level}</span>
@@ -1446,13 +1301,13 @@ def create_recommendation_card_html(recommendation: Recommendation) -> str:
     return f"""
     <div style="margin-bottom: 1.2rem; padding: 1.2rem; border: 1px solid #e2e8f0; border-left: 4px solid {color}; border-radius: 8px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-            <h4 style="margin: 0; color: #1f2937; font-weight: 600; font-size: 16px;">{recommendation.title}</h4>
+            <h4 style="margin: 0; color: #1f2937; font-weight: 600; font-size: 16px;">{html.escape(recommendation.title)}</h4>
             <span style="background: {color}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">{recommendation.priority}</span>
         </div>
-        <p style="margin: 0 0 0.8rem 0; color: #4b5563; font-size: 14px; line-height: 1.6;">{recommendation.description}</p>
+        <p style="margin: 0 0 0.8rem 0; color: #4b5563; font-size: 14px; line-height: 1.6;">{html.escape(recommendation.description)}</p>
         <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid #e2e8f0;">
-            <small style="color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; font-weight: 500;">📋 {recommendation.category}</small>
-            <small style="color: #6b7280; font-size: 12px;">⏰ {recommendation.timeframe}</small>
+            <small style="color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; font-weight: 500;">📋 {html.escape(recommendation.category)}</small>
+            <small style="color: #6b7280; font-size: 12px;">⏰ {html.escape(recommendation.timeframe)}</small>
         </div>
     </div>
     """

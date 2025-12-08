@@ -16,6 +16,11 @@ import re
 import io
 import os
 from pathlib import Path
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # File processing imports
 import PyPDF2
@@ -120,7 +125,7 @@ class FileProcessor:
             # Basic cleaning
             text = re.sub(r'\s+', ' ', text)
         except Exception as e:
-            print(f"Error processing PDF file {file_path}: {e}")
+            logger.error(f"Error processing PDF file {file_path}: {e}")
         
         return text
     
@@ -132,7 +137,7 @@ class FileProcessor:
             for para in doc.paragraphs:
                 text += para.text + "\n"
         except Exception as e:
-            print(f"Error processing DOCX file {file_path}: {e}")
+            logger.error(f"Error processing DOCX file {file_path}: {e}")
         
         return text.strip()
     
@@ -143,7 +148,7 @@ class FileProcessor:
             img = Image.open(file_path)
             text = pytesseract.image_to_string(img)
         except Exception as e:
-            print(f"Error processing image file {file_path}: {e}")
+            logger.error(f"Error processing image file {file_path}: {e}")
         
         return text
     
@@ -159,7 +164,7 @@ class FileProcessor:
                 with open(file_path, 'r', encoding='utf-8') as file:
                     text = file.read()
         except Exception as e:
-            print(f"Error processing text input {file_path}: {e}")
+            logger.error(f"Error processing text input {file_path}: {e}")
         
         return text.strip()
 
@@ -200,14 +205,17 @@ class EnhancedMedicalEntityExtractor:
                             self.nlp = spacy.load(fallback)
                     except Exception as e3:
                         # Last-resort fallback to a blank English pipeline
-                        print(f"Warning: Failed to load spaCy models ({e1}/{e1b}); download attempts failed ({e2}/{e3}). Using blank 'en' pipeline.")
+                        logger.warning(f"Failed to load spaCy models ({e1}/{e1b}); download attempts failed ({e2}/{e3}). Using blank 'en' pipeline.")
                         self.nlp = spacy.blank("en")
         
+        # Load medical data from JSON
+        self.load_medical_data()
+
         # Add custom pipeline components
         self._add_custom_components()
         
         # Initialize comprehensive medical knowledge base
-        self._initialize_enhanced_dictionaries()
+        # self._initialize_enhanced_dictionaries() # Removed, data loaded from JSON
         
         # Initialize pattern matchers
         self._initialize_pattern_matchers()
@@ -227,6 +235,101 @@ class EnhancedMedicalEntityExtractor:
         # Initialize file processor
         self.file_processor = FileProcessor()
     
+    def load_medical_data(self):
+        """Load medical dictionaries from JSON file"""
+        try:
+            # Assuming medical_data.json is in the same directory as this script
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            json_path = os.path.join(current_dir, 'medical_data.json')
+            
+            with open(json_path, 'r') as f:
+                self.medical_data = json.load(f)
+                
+            # Map JSON keys to class attributes for backward compatibility if needed
+            # or just use self.medical_data directly        # Flatten dictionaries for easier matching
+            self.disease_terms = {term.lower() for terms in self.medical_data.get('diseases', {}).values() for term in terms}
+            self.symptom_terms = {term.lower() for terms in self.medical_data.get('symptoms', {}).values() for term in terms}
+            self.medication_terms = {term.lower() for terms in self.medical_data.get('medications', {}).values() for term in terms}
+            self.body_part_terms = {term.lower() for terms in self.medical_data.get('body_parts', {}).values() for term in terms}
+            self.procedure_terms = {term.lower() for terms in self.medical_data.get('procedures', {}).values() for term in terms}
+            
+            # Load Lab Tests
+            self.lab_test_terms = {term.lower() for terms in self.medical_data.get('lab_tests', {}).values() for term in terms}
+            # Add common standalone lab terms
+            self.lab_test_terms.update([
+                "wbc", "rbc", "hgb", "hct", "plt", "mcv", "mch", "mchc", "rdw", "mpv",
+                "glucose", "bun", "creatinine", "sodium", "potassium", "chloride", "calcium",
+                "albumin", "protein", "bilirubin", "alp", "alt", "ast", "troponin", "ck-mb",
+                "bnp", "cholesterol", "triglycerides", "hdl", "ldl", "tsh", "t3", "t4",
+                "psa", "hba1c", "a1c", "inr", "pt", "ptt", "bp", "hr", "rr", "temp", "spo2",
+                "bmi", "weight", "height", "pulse", "respirations", "temperature", "saturation"
+            ])
+            self.diseases = self.medical_data.get('diseases', {})
+            self.symptoms = self.medical_data.get('symptoms', {})
+            self.medications = self.medical_data.get('medications', {})
+            self.tests = self.medical_data.get('tests', {})
+            self.body_parts = self.medical_data.get('body_parts', {})
+            self.procedures = self.medical_data.get('procedures', {})
+            self.clinical_findings = self.medical_data.get('clinical_findings', {})
+            self.microorganisms = self.medical_data.get('microorganisms', {})
+            self.severity_indicators = self.medical_data.get('severity_indicators', {})
+            self.certainty_indicators = self.medical_data.get('certainty_indicators', {})
+            self.temporal_indicators = self.medical_data.get('temporal_indicators', {})
+            self.laterality = self.medical_data.get('laterality', {})
+            self.anatomical_locations = self.medical_data.get('anatomical_locations', {})
+            self.treatments = self.medical_data.get('treatments', {})
+            self.vital_signs = self.medical_data.get('vital_signs', {})
+            self.allergy_terms = self.medical_data.get('allergy_terms', {})
+            self.social_history = self.medical_data.get('social_history', {})
+            self.family_history = self.medical_data.get('family_history', {})
+            self.lab_values = self.medical_data.get('lab_values', {})
+            self.imaging_findings = self.medical_data.get('imaging_findings', {})
+            self.specialties = self.medical_data.get('specialties', {})
+            self.units = self.medical_data.get('units', {})
+            self.risk_factors = self.medical_data.get('risk_factors', {})
+            self.status_descriptors = self.medical_data.get('status_descriptors', {})
+            self.negations = self.medical_data.get('negations', {})
+            self.abbreviations = self.medical_data.get('abbreviations', {}) # Ensure abbreviations are loaded
+            
+        except FileNotFoundError:
+            logger.warning(f"medical_data.json not found at {json_path}. Initializing with empty medical data.")
+            self.medical_data = defaultdict(dict)
+            # Initialize all attributes to empty dicts to prevent AttributeError
+            self.diseases = {}
+            self.symptoms = {}
+            self.medications = {}
+            self.tests = {}
+            self.body_parts = {}
+            self.procedures = {}
+            self.clinical_findings = {}
+            self.microorganisms = {}
+            self.severity_indicators = {}
+            self.certainty_indicators = {}
+            self.temporal_indicators = {}
+            self.laterality = {}
+            self.anatomical_locations = {}
+            self.treatments = {}
+            self.vital_signs = {}
+            self.allergy_terms = {}
+            self.social_history = {}
+            self.family_history = {}
+            self.lab_values = {}
+            self.imaging_findings = {}
+            self.specialties = {}
+            self.units = {}
+            self.risk_factors = {}
+            self.status_descriptors = {}
+            self.negations = {}
+            self.abbreviations = {}
+        except json.JSONDecodeError as e:
+            logger.error(f"Error decoding medical_data.json: {e}. Initializing with empty medical data.")
+            self.medical_data = defaultdict(dict)
+            self.diseases = {} # etc.
+        except Exception as e:
+            logger.error(f"Error loading medical data: {e}. Initializing with empty medical data.")
+            self.medical_data = defaultdict(dict)
+            self.diseases = {} # etc.
+
     def _add_custom_components(self):
         """Add custom pipeline components for medical text processing"""
         
@@ -267,554 +370,12 @@ class EnhancedMedicalEntityExtractor:
             self.nlp.add_pipe("negation_detector", last=True)
     
     def _initialize_enhanced_dictionaries(self):
-        """Initialize comprehensive medical dictionaries with semantic relationships"""
+        """
+        This method is now deprecated as data is loaded from medical_data.json.
+        It's kept as a placeholder or can be removed if not needed for other purposes.
+        """
+        pass # Data is loaded via load_medical_data()
         
-        # Diseases with synonyms and related terms
-        self.diseases = {
-            'diabetes': ['diabetes mellitus', 'dm', 'diabetic', 'hyperglycemia', 'type 1 diabetes', 'type 2 diabetes', 't1dm', 't2dm', 'insulin dependent', 'non-insulin dependent', 'gestational diabetes'],
-            'hypertension': ['high blood pressure', 'htn', 'hypertensive', 'elevated bp', 'essential hypertension', 'secondary hypertension', 'malignant hypertension'],
-            'myocardial infarction': ['heart attack', 'mi', 'stemi', 'nstemi', 'acute mi', 'cardiac infarction', 'coronary occlusion', 'acute coronary syndrome', 'acs'],
-            'pneumonia': ['pneumonitis', 'lung infection', 'pulmonary infection', 'lobar pneumonia', 'bronchopneumonia', 'aspiration pneumonia', 'cap', 'hap'],
-            'asthma': ['bronchial asthma', 'asthmatic', 'reactive airway disease', 'exercise-induced asthma', 'allergic asthma'],
-            'copd': ['chronic obstructive pulmonary disease', 'emphysema', 'chronic bronchitis', 'obstructive lung disease'],
-            'heart failure': ['congestive heart failure', 'chf', 'cardiac failure', 'hf', 'left ventricular failure', 'right heart failure', 'systolic dysfunction', 'diastolic dysfunction'],
-            'stroke': ['cerebrovascular accident', 'cva', 'brain attack', 'cerebral infarction', 'ischemic stroke', 'hemorrhagic stroke', 'tia', 'transient ischemic attack'],
-            'depression': ['major depressive disorder', 'mdd', 'depressive episode', 'clinical depression', 'unipolar depression'],
-            'anxiety': ['anxiety disorder', 'generalized anxiety', 'panic disorder', 'gad', 'social anxiety', 'phobia'],
-            'arthritis': ['osteoarthritis', 'rheumatoid arthritis', 'ra', 'oa', 'joint inflammation', 'degenerative joint disease', 'djd'],
-            'cancer': ['malignancy', 'tumor', 'neoplasm', 'carcinoma', 'sarcoma', 'lymphoma', 'leukemia', 'metastasis', 'adenocarcinoma'],
-            'infection': ['sepsis', 'bacteremia', 'infectious disease', 'septicemia', 'systemic infection', 'localized infection'],
-            'kidney disease': ['chronic kidney disease', 'ckd', 'renal failure', 'nephropathy', 'esrd', 'end stage renal disease', 'acute kidney injury', 'aki'],
-            'liver disease': ['hepatitis', 'cirrhosis', 'hepatic failure', 'liver cirrhosis', 'fatty liver', 'nafld', 'alcoholic liver disease'],
-            'atrial fibrillation': ['afib', 'af', 'atrial flutter', 'arrhythmia', 'irregular heartbeat'],
-            'pulmonary embolism': ['pe', 'lung embolism', 'pulmonary thromboembolism'],
-            'deep vein thrombosis': ['dvt', 'venous thrombosis', 'leg clot'],
-            'hypothyroidism': ['underactive thyroid', 'low thyroid', 'myxedema'],
-            'hyperthyroidism': ['overactive thyroid', 'thyrotoxicosis', 'graves disease'],
-            'anemia': ['low hemoglobin', 'iron deficiency anemia', 'pernicious anemia', 'aplastic anemia'],
-            'osteoporosis': ['bone loss', 'low bone density', 'osteopenia'],
-            'peptic ulcer': ['gastric ulcer', 'duodenal ulcer', 'stomach ulcer', 'pud'],
-            'gerd': ['gastroesophageal reflux disease', 'acid reflux', 'heartburn', 'reflux'],
-            'pancreatitis': ['pancreatic inflammation', 'acute pancreatitis', 'chronic pancreatitis'],
-            'cholecystitis': ['gallbladder inflammation', 'acute cholecystitis'],
-            'appendicitis': ['acute appendicitis', 'inflamed appendix'],
-            'diverticulitis': ['diverticular disease', 'colonic diverticulitis'],
-            'celiac disease': ['gluten sensitivity', 'celiac sprue', 'gluten enteropathy'],
-            'crohn disease': ['crohns', 'inflammatory bowel disease', 'ibd', 'regional enteritis'],
-            'ulcerative colitis': ['uc', 'colitis', 'inflammatory bowel disease'],
-            'multiple sclerosis': ['ms', 'demyelinating disease'],
-            'parkinson disease': ['parkinsons', 'pd', 'parkinsonism'],
-            'alzheimer disease': ['alzheimers', 'dementia', 'senile dementia'],
-            'epilepsy': ['seizure disorder', 'convulsions', 'epileptic'],
-            'migraine': ['migraine headache', 'vascular headache'],
-            'glaucoma': ['increased intraocular pressure', 'iop', 'optic neuropathy'],
-            'cataracts': ['lens opacity', 'cloudy lens'],
-            'macular degeneration': ['amd', 'age-related macular degeneration'],
-            'psoriasis': ['plaque psoriasis', 'psoriatic'],
-            'eczema': ['atopic dermatitis', 'dermatitis'],
-            'lupus': ['sle', 'systemic lupus erythematosus', 'lupus erythematosus'],
-            'scleroderma': ['systemic sclerosis', 'hardening of skin'],
-            'gout': ['gouty arthritis', 'hyperuricemia', 'uric acid arthritis'],
-            'benign prostatic hyperplasia': ['bph', 'enlarged prostate', 'prostatic hypertrophy'],
-            'urinary tract infection': ['uti', 'bladder infection', 'cystitis', 'pyelonephritis'],
-            'endometriosis': ['endometrial implants'],
-            'polycystic ovary syndrome': ['pcos', 'polycystic ovarian syndrome'],
-            'hyperlipidemia': ['high cholesterol', 'dyslipidemia', 'hypercholesterolemia'],
-            'metabolic syndrome': ['syndrome x', 'insulin resistance syndrome'],
-            'obesity': ['overweight', 'morbid obesity', 'bmi over 30'],
-            'sleep apnea': ['obstructive sleep apnea', 'osa', 'sleep disordered breathing'],
-            'schizophrenia': ['psychotic disorder', 'psychosis'],
-            'bipolar disorder': ['manic depression', 'bipolar affective disorder'],
-            'adhd': ['attention deficit hyperactivity disorder', 'add', 'attention deficit disorder'],
-            'autism': ['autism spectrum disorder', 'asd', 'autistic'],
-            'tuberculosis': ['tb', 'pulmonary tuberculosis', 'mycobacterial infection'],
-            'hiv': ['human immunodeficiency virus', 'aids', 'acquired immunodeficiency syndrome'],
-            'hepatitis c': ['hcv', 'hep c'],
-            'hepatitis b': ['hbv', 'hep b'],
-            'lyme disease': ['borrelia', 'tick-borne illness'],
-            'meningitis': ['meningeal inflammation', 'bacterial meningitis', 'viral meningitis'],
-            'encephalitis': ['brain inflammation', 'viral encephalitis']
-        }
-        
-        # Symptoms with variations
-        self.symptoms = {
-            'chest pain': ['chest discomfort', 'thoracic pain', 'angina', 'chest tightness', 'substernal pain', 'precordial pain', 'retrosternal pain'],
-            'shortness of breath': ['dyspnea', 'breathlessness', 'sob', 'respiratory distress', 'air hunger', 'difficulty breathing'],
-            'abdominal pain': ['stomach pain', 'belly pain', 'abdominal discomfort', 'epigastric pain', 'lower abdominal pain', 'upper abdominal pain'],
-            'headache': ['cephalgia', 'head pain', 'migraine', 'tension headache', 'cluster headache'],
-            'nausea': ['feeling sick', 'queasiness', 'stomach upset', 'nauseous'],
-            'vomiting': ['emesis', 'throwing up', 'retching', 'vomited'],
-            'fever': ['pyrexia', 'elevated temperature', 'febrile', 'hyperthermia', 'high temperature'],
-            'fatigue': ['tiredness', 'exhaustion', 'weakness', 'malaise', 'lethargy', 'asthenia'],
-            'dizziness': ['vertigo', 'lightheadedness', 'giddiness', 'spinning sensation', 'unsteadiness'],
-            'palpitations': ['heart racing', 'rapid heartbeat', 'tachycardia', 'irregular heartbeat', 'heart fluttering'],
-            'swelling': ['edema', 'fluid retention', 'bloating', 'peripheral edema', 'ankle swelling'],
-            'rash': ['skin eruption', 'dermatitis', 'skin irritation', 'erythema', 'hives', 'urticaria'],
-            'joint pain': ['arthralgia', 'joint ache', 'joint stiffness', 'joint swelling'],
-            'back pain': ['lumbar pain', 'spinal pain', 'backache', 'lower back pain', 'upper back pain'],
-            'cough': ['productive cough', 'dry cough', 'persistent cough', 'chronic cough', 'hemoptysis'],
-            'wheezing': ['bronchospasm', 'whistling breath', 'stridor'],
-            'syncope': ['fainting', 'loss of consciousness', 'passing out', 'blackout'],
-            'confusion': ['altered mental status', 'disorientation', 'delirium', 'mental confusion'],
-            'seizure': ['convulsion', 'fit', 'epileptic episode', 'tonic-clonic seizure'],
-            'bleeding': ['hemorrhage', 'blood loss', 'hematoma', 'bruising', 'ecchymosis'],
-            'numbness': ['paresthesia', 'tingling', 'loss of sensation', 'pins and needles'],
-            'vision changes': ['blurred vision', 'diplopia', 'double vision', 'visual disturbance', 'loss of vision'],
-            'hearing loss': ['deafness', 'auditory impairment', 'hearing impairment'],
-            'tinnitus': ['ringing in ears', 'ear ringing', 'buzzing in ears'],
-            'difficulty swallowing': ['dysphagia', 'swallowing difficulty', 'odynophagia'],
-            'hoarseness': ['voice changes', 'dysphonia', 'raspy voice'],
-            'sore throat': ['pharyngitis', 'throat pain', 'odynophagia'],
-            'difficulty urinating': ['dysuria', 'urinary retention', 'hesitancy', 'painful urination'],
-            'frequent urination': ['polyuria', 'urinary frequency', 'nocturia'],
-            'incontinence': ['urinary incontinence', 'loss of bladder control', 'enuresis'],
-            'diarrhea': ['loose stools', 'frequent bowel movements', 'watery stools'],
-            'constipation': ['hard stools', 'infrequent bowel movements', 'difficulty passing stool'],
-            'blood in stool': ['melena', 'hematochezia', 'rectal bleeding', 'black tarry stools'],
-            'jaundice': ['icterus', 'yellow skin', 'yellowing', 'hyperbilirubinemia'],
-            'weight loss': ['unintentional weight loss', 'cachexia', 'wasting'],
-            'weight gain': ['weight increase', 'obesity'],
-            'night sweats': ['nocturnal sweats', 'diaphoresis', 'excessive sweating'],
-            'chills': ['rigors', 'shaking', 'shivering'],
-            'tremor': ['shaking', 'trembling', 'involuntary movement'],
-            'muscle weakness': ['myasthenia', 'weakness', 'muscle fatigue'],
-            'muscle pain': ['myalgia', 'muscle ache', 'muscle soreness'],
-            'stiffness': ['rigidity', 'joint stiffness', 'morning stiffness'],
-            'anxiety symptoms': ['nervousness', 'panic', 'worry', 'restlessness'],
-            'depression symptoms': ['sadness', 'low mood', 'anhedonia', 'hopelessness'],
-            'insomnia': ['sleep disturbance', 'difficulty sleeping', 'sleeplessness'],
-            'excessive thirst': ['polydipsia', 'increased thirst'],
-            'excessive hunger': ['polyphagia', 'increased appetite']
-        }
-        
-        # Medications with brand names and generics
-        self.medications = {
-            'aspirin': ['acetylsalicylic acid', 'asa', 'bayer', 'ecotrin'],
-            'metformin': ['glucophage', 'fortamet', 'glumetza', 'riomet'],
-            'lisinopril': ['prinivil', 'zestril', 'ace inhibitor'],
-            'atenolol': ['tenormin', 'beta blocker'],
-            'simvastatin': ['zocor', 'statin'],
-            'atorvastatin': ['lipitor', 'statin'],
-            'omeprazole': ['prilosec', 'proton pump inhibitor', 'ppi'],
-            'pantoprazole': ['protonix', 'ppi'],
-            'insulin': ['insulin glargine', 'lantus', 'humalog', 'novolog', 'insulin aspart', 'insulin lispro'],
-            'warfarin': ['coumadin', 'anticoagulant', 'blood thinner'],
-            'apixaban': ['eliquis', 'anticoagulant', 'doac', 'novel anticoagulant'],
-            'rivaroxaban': ['xarelto', 'anticoagulant'],
-            'prednisone': ['prednisolone', 'corticosteroid', 'steroid'],
-            'dexamethasone': ['decadron', 'steroid'],
-            'morphine': ['opioid', 'narcotic', 'pain medication'],
-            'oxycodone': ['oxycontin', 'percocet', 'opioid'],
-            'hydrocodone': ['vicodin', 'norco', 'opioid'],
-            'furosemide': ['lasix', 'diuretic', 'water pill', 'loop diuretic'],
-            'hydrochlorothiazide': ['hctz', 'microzide', 'diuretic', 'thiazide'],
-            'albuterol': ['ventolin', 'proair', 'bronchodilator', 'beta agonist'],
-            'levothyroxine': ['synthroid', 'levoxyl', 'thyroid hormone'],
-            'amlodipine': ['norvasc', 'calcium channel blocker', 'ccb'],
-            'metoprolol': ['lopressor', 'toprol', 'beta blocker'],
-            'carvedilol': ['coreg', 'beta blocker'],
-            'losartan': ['cozaar', 'arb', 'angiotensin receptor blocker'],
-            'valsartan': ['diovan', 'arb'],
-            'clopidogrel': ['plavix', 'antiplatelet', 'blood thinner'],
-            'amoxicillin': ['amoxil', 'antibiotic', 'penicillin'],
-            'azithromycin': ['zithromax', 'z-pak', 'antibiotic', 'macrolide'],
-            'ciprofloxacin': ['cipro', 'antibiotic', 'fluoroquinolone'],
-            'doxycycline': ['vibramycin', 'antibiotic'],
-            'cephalexin': ['keflex', 'antibiotic', 'cephalosporin'],
-            'fluoxetine': ['prozac', 'ssri', 'antidepressant'],
-            'sertraline': ['zoloft', 'ssri', 'antidepressant'],
-            'escitalopram': ['lexapro', 'ssri'],
-            'duloxetine': ['cymbalta', 'snri'],
-            'gabapentin': ['neurontin', 'anticonvulsant', 'neuropathic pain medication'],
-            'pregabalin': ['lyrica', 'anticonvulsant'],
-            'lorazepam': ['ativan', 'benzodiazepine', 'benzo'],
-            'alprazolam': ['xanax', 'benzodiazepine'],
-            'diazepam': ['valium', 'benzodiazepine'],
-            'zolpidem': ['ambien', 'sleep medication', 'hypnotic'],
-            'tramadol': ['ultram', 'pain medication', 'analgesic'],
-            'ibuprofen': ['advil', 'motrin', 'nsaid', 'anti-inflammatory'],
-            'naproxen': ['aleve', 'naprosyn', 'nsaid'],
-            'acetaminophen': ['tylenol', 'paracetamol', 'analgesic'],
-            'montelukast': ['singulair', 'leukotriene inhibitor'],
-            'allopurinol': ['zyloprim', 'gout medication'],
-            'tamsulosin': ['flomax', 'alpha blocker'],
-            'finasteride': ['proscar', 'propecia', '5-alpha reductase inhibitor'],
-            'digoxin': ['lanoxin', 'cardiac glycoside'],
-            'spironolactone': ['aldactone', 'potassium sparing diuretic'],
-            'nitroglycerin': ['nitro', 'nitrate', 'angina medication'],
-            'heparin': ['anticoagulant', 'blood thinner'],
-            'enoxaparin': ['lovenox', 'low molecular weight heparin', 'lmwh'],
-            'vancomycin': ['vancocin', 'antibiotic'],
-            'methylprednisolone': ['medrol', 'solu-medrol', 'steroid'],
-            'ranitidine': ['zantac', 'h2 blocker'],
-            'famotidine': ['pepcid', 'h2 blocker'],
-            'diphenhydramine': ['benadryl', 'antihistamine'],
-            'cetirizine': ['zyrtec', 'antihistamine'],
-            'fexofenadine': ['allegra', 'antihistamine'],
-            'ondansetron': ['zofran', 'antiemetic'],
-            'metoclopramide': ['reglan', 'antiemetic', 'prokinetic']
-        }
-        
-        # Enhanced tests and procedures
-        self.tests = {
-            'electrocardiogram': ['ecg', 'ekg', '12-lead ecg', 'cardiac monitoring'],
-            'computed tomography': ['ct scan', 'cat scan', 'ct', 'ct imaging'],
-            'magnetic resonance imaging': ['mri', 'mri scan', 'magnetic resonance'],
-            'complete blood count': ['cbc', 'full blood count', 'hemogram'],
-            'comprehensive metabolic panel': ['cmp', 'metabolic panel', 'chemistry panel'],
-            'basic metabolic panel': ['bmp', 'chem 7', 'electrolytes'],
-            'lipid panel': ['cholesterol panel', 'lipid profile', 'fasting lipids'],
-            'liver function tests': ['lfts', 'hepatic panel', 'liver panel'],
-            'renal function tests': ['kidney function', 'creatinine', 'bun'],
-            'blood urea nitrogen': ['bun'],
-            'creatinine': ['serum creatinine', 'scr'],
-            'glomerular filtration rate': ['gfr', 'egfr', 'estimated gfr'],
-            'brain natriuretic peptide': ['bnp', 'pro-bnp', 'nt-probnp'],
-            'troponin': ['cardiac troponin', 'troponin i', 'troponin t'],
-            'hemoglobin a1c': ['hba1c', 'glycated hemoglobin', 'glycohemoglobin', 'a1c'],
-            'thyroid stimulating hormone': ['tsh', 'thyrotropin'],
-            'free t4': ['thyroxine', 'free thyroxine'],
-            'free t3': ['triiodothyronine'],
-            'prostate specific antigen': ['psa'],
-            'urinalysis': ['ua', 'urine test', 'urine dipstick'],
-            'urine culture': ['urine cx'],
-            'blood culture': ['blood cx'],
-            'sputum culture': ['sputum cx'],
-            'echocardiogram': ['echo', 'cardiac ultrasound', 'transthoracic echo', 'tte'],
-            'stress test': ['exercise stress test', 'nuclear stress test', 'treadmill test', 'cardiac stress test'],
-            'cardiac catheterization': ['cardiac cath', 'angiogram', 'coronary angiography'],
-            'colonoscopy': ['lower endoscopy', 'colon screening'],
-            'endoscopy': ['upper endoscopy', 'egd', 'esophagogastroduodenoscopy'],
-            'ultrasound': ['sonogram', 'us', 'ultrasonography'],
-            'x-ray': ['radiograph', 'plain film', 'chest x-ray', 'cxr'],
-            'mammogram': ['breast imaging', 'screening mammography'],
-            'bone density scan': ['dexa scan', 'dxa', 'bone densitometry'],
-            'pulmonary function test': ['pft', 'spirometry', 'lung function test'],
-            'arterial blood gas': ['abg', 'blood gas'],
-            'coagulation studies': ['pt', 'ptt', 'inr', 'prothrombin time'],
-            'lumbar puncture': ['spinal tap', 'lp', 'csf analysis'],
-            'biopsy': ['tissue biopsy', 'pathology'],
-            'pap smear': ['cervical cytology', 'pap test'],
-            'eeg': ['electroencephalogram', 'brain wave test'],
-            'emg': ['electromyography', 'nerve conduction study'],
-            'holter monitor': ['ambulatory ecg', '24-hour monitor', 'cardiac monitor'],
-            'sleep study': ['polysomnography', 'psg', 'sleep test'],
-            'd-dimer': ['fibrin degradation product'],
-            'sed rate': ['esr', 'erythrocyte sedimentation rate'],
-            'c-reactive protein': ['crp', 'inflammatory marker'],
-            'rheumatoid factor': ['rf'],
-            'ana': ['antinuclear antibody'],
-            'cea': ['carcinoembryonic antigen', 'tumor marker'],
-            'ca 19-9': ['cancer antigen', 'tumor marker'],
-            'ca 125': ['cancer antigen', 'ovarian tumor marker'],
-            'vitamin d': ['25-hydroxyvitamin d', 'vitamin d level'],
-            'vitamin b12': ['cobalamin', 'b12 level'],
-            'folate': ['folic acid', 'folate level'],
-            'iron studies': ['serum iron', 'ferritin', 'tibc', 'transferrin saturation']
-        }
-        
-        # Body parts with anatomical variations
-        self.body_parts = {
-            'heart': ['cardiac', 'myocardium', 'coronary', 'atrium', 'ventricle', 'valve'],
-            'lung': ['pulmonary', 'respiratory', 'bronchial', 'alveolar', 'pleural'],
-            'kidney': ['renal', 'nephro', 'urinary'],
-            'liver': ['hepatic', 'hepato', 'biliary'],
-            'brain': ['cerebral', 'neurological', 'cns', 'cerebrum', 'cerebellum'],
-            'stomach': ['gastric', 'gastro'],
-            'intestine': ['bowel', 'gut', 'gastrointestinal', 'enteric', 'colon', 'small bowel'],
-            'blood vessel': ['vascular', 'arterial', 'venous', 'artery', 'vein', 'capillary'],
-            'bone': ['skeletal', 'osseous', 'vertebra', 'spine'],
-            'muscle': ['muscular', 'myopathy', 'musculoskeletal'],
-            'pancreas': ['pancreatic'],
-            'spleen': ['splenic'],
-            'thyroid': ['thyroid gland', 'thyroidal'],
-            'adrenal': ['adrenal gland', 'suprarenal'],
-            'pituitary': ['pituitary gland', 'hypophysis'],
-            'bladder': ['urinary bladder', 'vesical'],
-            'urethra': ['urethral'],
-            'prostate': ['prostatic'],
-            'uterus': ['uterine', 'endometrial'],
-            'ovary': ['ovarian'],
-            'breast': ['mammary'],
-            'skin': ['dermal', 'cutaneous', 'integumentary'],
-            'eye': ['ocular', 'ophthalmic', 'retina', 'cornea'],
-            'ear': ['auditory', 'otic', 'tympanic'],
-            'nose': ['nasal', 'sinus'],
-            'throat': ['pharyngeal', 'laryngeal'],
-            'esophagus': ['esophageal'],
-            'gallbladder': ['cholecystic', 'biliary'],
-            'appendix': ['appendiceal'],
-            'rectum': ['rectal', 'anorectal'],
-            'anus': ['anal'],
-            'joint': ['articular', 'synovial'],
-            'cartilage': ['chondral'],
-            'tendon': ['tendinous'],
-            'ligament': ['ligamentous'],
-            'nerve': ['neural', 'neurological', 'peripheral nerve'],
-            'spinal cord': ['myelopathy', 'spinal'],
-            'lymph node': ['lymphatic', 'lymphoid'],
-            'tonsil': ['tonsillar'],
-            'adenoid': ['adenoidal']
-        }
-        
-        # Severity indicators
-        self.severity_indicators = {
-            'mild': ['slight', 'minor', 'minimal', 'low-grade', 'trivial', 'negligible'],
-            'moderate': ['moderate', 'medium', 'intermediate', 'moderately severe'],
-            'severe': ['severe', 'serious', 'marked', 'significant', 'profound', 'critical', 'grave'],
-            'acute': ['sudden', 'rapid', 'immediate', 'emergent', 'urgent', 'abrupt'],
-            'chronic': ['long-term', 'persistent', 'ongoing', 'longstanding', 'recurrent'],
-            'progressive': ['worsening', 'advancing', 'deteriorating', 'declining'],
-            'stable': ['unchanged', 'steady', 'controlled', 'maintained'],
-            'resolving': ['improving', 'recovering', 'healing', 'subsiding']
-        }
-        
-        # Certainty indicators
-        self.certainty_indicators = {
-            'definite': ['confirmed', 'diagnosed', 'established', 'proven', 'documented'],
-            'probable': ['likely', 'probable', 'suspected', 'presumed', 'suggestive'],
-            'possible': ['possible', 'potential', 'may have', 'could be', 'questionable'],
-            'rule_out': ['rule out', 'r/o', 'exclude', 'differential', 'consider']
-        }
-        
-        # Temporal indicators
-        self.temporal_indicators = {
-            'current': ['present', 'active', 'ongoing', 'current'],
-            'past': ['history of', 'previous', 'prior', 'former', 'old'],
-            'recent': ['recent', 'new onset', 'newly diagnosed'],
-            'childhood': ['since childhood', 'lifelong', 'congenital'],
-            'recurrent': ['recurrent', 'recurring', 'repeated', 'episodic']
-        }
-        
-        # Laterality indicators
-        self.laterality = {
-            'left': ['left', 'left-sided', 'sinister'],
-            'right': ['right', 'right-sided', 'dexter'],
-            'bilateral': ['bilateral', 'both sides', 'bilaterally'],
-            'unilateral': ['unilateral', 'one-sided']
-        }
-        
-        # Anatomical locations
-        self.anatomical_locations = {
-            'upper': ['superior', 'proximal', 'upper', 'cranial'],
-            'lower': ['inferior', 'distal', 'lower', 'caudal'],
-            'anterior': ['front', 'ventral', 'anterior'],
-            'posterior': ['back', 'dorsal', 'posterior'],
-            'medial': ['inner', 'medial', 'middle'],
-            'lateral': ['outer', 'lateral', 'side'],
-            'central': ['central', 'midline', 'middle']
-        }
-        
-        # Treatment modalities
-        self.treatments = {
-            'surgery': ['surgical intervention', 'operation', 'procedure', 'operative', 'resection', 'excision'],
-            'radiation': ['radiotherapy', 'radiation therapy', 'xrt', 'irradiation'],
-            'chemotherapy': ['chemo', 'cytotoxic therapy', 'antineoplastic therapy'],
-            'physical therapy': ['pt', 'physiotherapy', 'rehabilitation'],
-            'occupational therapy': ['ot'],
-            'dialysis': ['hemodialysis', 'peritoneal dialysis', 'renal replacement therapy'],
-            'oxygen therapy': ['supplemental oxygen', 'o2 therapy'],
-            'ventilation': ['mechanical ventilation', 'intubation', 'respiratory support'],
-            'transfusion': ['blood transfusion', 'packed red blood cells', 'prbc']
-        }
-        
-        # Vital signs
-        self.vital_signs = {
-            'blood pressure': ['bp', 'systolic', 'diastolic', 'hypertensive', 'hypotensive'],
-            'heart rate': ['pulse', 'hr', 'bpm', 'beats per minute'],
-            'respiratory rate': ['rr', 'breathing rate', 'respirations'],
-            'temperature': ['temp', 'fever', 'afebrile', 'febrile'],
-            'oxygen saturation': ['spo2', 'o2 sat', 'pulse ox', 'saturation']
-        }
-        
-        # Allergies and adverse reactions
-        self.allergy_terms = {
-            'allergy': ['allergic', 'hypersensitivity', 'allergic reaction'],
-            'anaphylaxis': ['anaphylactic', 'severe allergic reaction'],
-            'adverse reaction': ['adverse effect', 'side effect', 'drug reaction', 'intolerance'],
-            'rash': ['urticaria', 'hives', 'skin reaction', 'erythema'],
-            'nausea from medication': ['medication-induced nausea', 'drug-induced nausea']
-        }
-        
-        # Social history terms
-        self.social_history = {
-            'smoking': ['tobacco use', 'cigarette', 'smoker', 'pack years', 'nicotine'],
-            'alcohol': ['ethanol', 'drinking', 'alcohol use', 'alcoholic', 'etoh'],
-            'drug use': ['substance abuse', 'illicit drugs', 'recreational drugs', 'narcotics'],
-            'exercise': ['physical activity', 'sedentary', 'active lifestyle'],
-            'occupation': ['work', 'employment', 'occupational exposure']
-        }
-        
-        # Family history terms
-        self.family_history = {
-            'family history': ['fh', 'familial', 'hereditary', 'genetic predisposition'],
-            'maternal': ['mother', "mother's side", 'maternal lineage'],
-            'paternal': ['father', "father's side", 'paternal lineage'],
-            'sibling': ['brother', 'sister', 'siblings'],
-            'grandparent': ['grandmother', 'grandfather', 'grandparents']
-        }
-        
-        # Surgical procedures
-        self.procedures = {
-            'appendectomy': ['appendix removal', 'removal of appendix'],
-            'cholecystectomy': ['gallbladder removal', 'gb removal'],
-            'hysterectomy': ['uterus removal', 'removal of uterus'],
-            'mastectomy': ['breast removal'],
-            'prostatectomy': ['prostate removal'],
-            'colectomy': ['colon resection', 'bowel resection'],
-            'coronary artery bypass': ['cabg', 'bypass surgery', 'heart bypass'],
-            'angioplasty': ['pci', 'percutaneous coronary intervention', 'stent placement'],
-            'hip replacement': ['total hip arthroplasty', 'tha', 'hip arthroplasty'],
-            'knee replacement': ['total knee arthroplasty', 'tka', 'knee arthroplasty'],
-            'cataract surgery': ['cataract extraction', 'lens replacement'],
-            'tonsillectomy': ['tonsil removal'],
-            'cesarean section': ['c-section', 'cesarean delivery', 'cs'],
-            'laparoscopy': ['laparoscopic surgery', 'minimally invasive surgery'],
-            'arthroscopy': ['arthroscopic surgery', 'joint scope'],
-            'biopsy': ['tissue sampling', 'needle biopsy', 'excisional biopsy'],
-            'lumpectomy': ['breast-conserving surgery', 'partial mastectomy'],
-            'spinal fusion': ['spondylodesis', 'vertebral fusion'],
-            'hernia repair': ['herniorrhaphy', 'hernioplasty'],
-            'pacemaker insertion': ['pacemaker placement', 'cardiac pacemaker'],
-            'icd placement': ['defibrillator implantation', 'implantable cardioverter defibrillator'],
-            'tracheostomy': ['trach', 'tracheotomy'],
-            'thoracotomy': ['chest surgery', 'open chest procedure'],
-            'craniotomy': ['skull surgery', 'brain surgery access']
-        }
-        
-        # Clinical findings
-        self.clinical_findings = {
-            'murmur': ['heart murmur', 'cardiac murmur', 'systolic murmur', 'diastolic murmur'],
-            'rales': ['crackles', 'pulmonary rales', 'lung crackles'],
-            'wheezes': ['wheezing', 'bronchospasm', 'expiratory wheeze'],
-            'hepatomegaly': ['enlarged liver', 'liver enlargement'],
-            'splenomegaly': ['enlarged spleen', 'spleen enlargement'],
-            'lymphadenopathy': ['swollen lymph nodes', 'enlarged lymph nodes'],
-            'ascites': ['abdominal fluid', 'peritoneal fluid'],
-            'pleural effusion': ['fluid in lungs', 'pleural fluid'],
-            'clubbing': ['digital clubbing', 'finger clubbing'],
-            'cyanosis': ['blue discoloration', 'bluish skin'],
-            'pallor': ['pale', 'paleness', 'pale skin'],
-            'jaundice': ['icterus', 'yellowing', 'yellow discoloration'],
-            'petechiae': ['pinpoint bleeding', 'small hemorrhages'],
-            'ecchymosis': ['bruising', 'bruise', 'contusion'],
-            'organomegaly': ['organ enlargement', 'enlarged organ']
-        }
-        
-        # Lab values and ranges
-        self.lab_values = {
-            'elevated': ['high', 'increased', 'raised', 'above normal'],
-            'decreased': ['low', 'reduced', 'below normal', 'depressed'],
-            'normal': ['within normal limits', 'wnl', 'unremarkable', 'normal range'],
-            'critical': ['critically high', 'critically low', 'panic value'],
-            'negative': ['negative', 'not detected', 'absent'],
-            'positive': ['positive', 'detected', 'present', 'reactive']
-        }
-        
-        # Imaging findings
-        self.imaging_findings = {
-            'mass': ['lesion', 'nodule', 'tumor', 'growth', 'space-occupying lesion'],
-            'consolidation': ['infiltrate', 'opacity', 'pulmonary consolidation'],
-            'atelectasis': ['lung collapse', 'collapsed lung'],
-            'pneumothorax': ['collapsed lung', 'air in pleural space'],
-            'fracture': ['break', 'broken bone', 'bone fracture'],
-            'dislocation': ['joint dislocation', 'displaced joint'],
-            'stenosis': ['narrowing', 'stricture', 'constriction'],
-            'occlusion': ['blockage', 'obstruction', 'complete blockage'],
-            'aneurysm': ['dilation', 'bulge', 'vascular aneurysm'],
-            'hemorrhage': ['bleeding', 'blood', 'hematoma'],
-            'infarction': ['dead tissue', 'ischemic area', 'tissue death'],
-            'ischemia': ['decreased blood flow', 'poor perfusion'],
-            'cardiomegaly': ['enlarged heart', 'heart enlargement'],
-            'calcification': ['calcium deposits', 'calcified'],
-            'edema': ['swelling', 'fluid accumulation']
-        }
-        
-        # Microorganisms
-        self.microorganisms = {
-            'bacteria': ['bacterial', 'bacterium', 'gram positive', 'gram negative'],
-            'virus': ['viral', 'viruses'],
-            'fungus': ['fungal', 'yeast', 'mold'],
-            'parasite': ['parasitic', 'parasites'],
-            'staphylococcus': ['staph', 's aureus', 'mrsa', 'mssa'],
-            'streptococcus': ['strep', 's pneumoniae', 's pyogenes'],
-            'escherichia coli': ['e coli', 'ecoli'],
-            'pseudomonas': ['p aeruginosa'],
-            'clostridium': ['c diff', 'c difficile', 'clostridium difficile'],
-            'mycobacterium': ['tb', 'tuberculosis', 'm tuberculosis'],
-            'candida': ['yeast infection', 'candidiasis'],
-            'influenza': ['flu', 'influenza virus'],
-            'covid': ['covid-19', 'coronavirus', 'sars-cov-2'],
-            'herpes': ['hsv', 'herpes simplex', 'herpes virus'],
-            'hepatitis virus': ['hav', 'hbv', 'hcv', 'hepatitis a', 'hepatitis b', 'hepatitis c']
-        }
-        
-        # Medical specialties
-        self.specialties = {
-            'cardiology': ['cardiac', 'heart specialist', 'cardiologist'],
-            'pulmonology': ['pulmonary', 'lung specialist', 'pulmonologist'],
-            'gastroenterology': ['gi', 'gastroenterologist', 'gi specialist'],
-            'neurology': ['neurologist', 'neurological', 'neuro'],
-            'nephrology': ['nephrologist', 'kidney specialist'],
-            'endocrinology': ['endocrinologist', 'hormone specialist'],
-            'hematology': ['hematologist', 'blood specialist'],
-            'oncology': ['oncologist', 'cancer specialist'],
-            'rheumatology': ['rheumatologist', 'arthritis specialist'],
-            'dermatology': ['dermatologist', 'skin specialist'],
-            'psychiatry': ['psychiatrist', 'mental health'],
-            'orthopedics': ['orthopedic', 'bone specialist', 'orthopedist'],
-            'urology': ['urologist', 'urinary specialist'],
-            'gynecology': ['gynecologist', 'women\'s health'],
-            'obstetrics': ['obstetrician', 'ob', 'pregnancy specialist'],
-            'ophthalmology': ['ophthalmologist', 'eye specialist'],
-            'otolaryngology': ['ent', 'ear nose throat'],
-            'surgery': ['surgeon', 'surgical', 'operative'],
-            'emergency medicine': ['er', 'emergency', 'emergency physician'],
-            'internal medicine': ['internist', 'general medicine'],
-            'family medicine': ['family practice', 'primary care'],
-            'pediatrics': ['pediatrician', 'children\'s doctor'],
-            'geriatrics': ['geriatrician', 'elderly care'],
-            'anesthesiology': ['anesthesiologist', 'anesthesia'],
-            'radiology': ['radiologist', 'imaging specialist'],
-            'pathology': ['pathologist', 'lab medicine']
-        }
-        
-        # Units of measurement
-        self.units = {
-            'blood pressure': ['mmhg', 'mm hg', 'millimeters of mercury'],
-            'weight': ['kg', 'kilogram', 'lb', 'pound', 'lbs'],
-            'height': ['cm', 'centimeter', 'inch', 'inches', 'feet', 'ft'],
-            'temperature': ['celsius', 'fahrenheit', 'degrees', 'c', 'f'],
-            'laboratory': ['mg/dl', 'mmol/l', 'u/l', 'iu/l', 'pg/ml', 'ng/ml', 'mcg/ml'],
-            'volume': ['ml', 'milliliter', 'liter', 'l', 'cc'],
-            'dosage': ['mg', 'milligram', 'mcg', 'microgram', 'gram', 'g', 'units']
-        }
-        
-        # Risk factors
-        self.risk_factors = {
-            'modifiable': ['smoking', 'obesity', 'sedentary lifestyle', 'poor diet', 'alcohol abuse'],
-            'non_modifiable': ['age', 'gender', 'family history', 'genetics', 'race', 'ethnicity'],
-            'cardiovascular': ['hypertension', 'high cholesterol', 'diabetes', 'smoking'],
-            'cancer': ['smoking', 'family history', 'radiation exposure', 'chemical exposure']
-        }
-        
-        # Patient status descriptors
-        self.status_descriptors = {
-            'stable': ['stable condition', 'clinically stable', 'hemodynamically stable'],
-            'unstable': ['unstable', 'critical', 'deteriorating', 'decompensated'],
-            'improved': ['improving', 'better', 'resolved', 'recovery'],
-            'worsened': ['worse', 'worsening', 'progressive', 'declining'],
-            'unchanged': ['no change', 'static', 'status quo', 'same']
-        }
-        
-        # Negation terms (important for NLP)
-        self.negations = {
-            'no': ['no', 'not', 'without', 'absent', 'denies', 'negative for'],
-            'never': ['never', 'never had'],
-            'ruled_out': ['ruled out', 'ro', 'excluded', 'unlikely'],
-            'free_of': ['free of', 'clear of', 'no evidence of']
-        }
-    
     def _initialize_pattern_matchers(self):
         """Initialize advanced pattern matchers with comprehensive medical patterns"""
         
@@ -860,14 +421,19 @@ class EnhancedMedicalEntityExtractor:
             [{"TEXT": {"REGEX": r"\d+\.?\d*"}}, 
              {"LOWER": {"IN": ["mg", "g", "ml", "cc", "units", "iu", "mcg", "µg", "grams", "milligrams", "micrograms"]}}],
             
-            # Frequency patterns: "once daily", "twice a day", "three times daily"
-            [{"LOWER": {"IN": ["once", "twice", "three", "four", "1", "2", "3", "4"]}}, 
+            # Frequency patterns: "once daily", "twice a day"
+            [{"LOWER": {"IN": ["once", "twice"]}}, 
              {"LOWER": {"IN": ["daily", "times", "time"]}, "OP": "?"}, 
+             {"LOWER": {"IN": ["daily", "day", "per", "a"]}, "OP": "?"}],
+
+            # Frequency with numbers: "3 times daily", "three times a day" - REQUIRED 'times' or similar
+            [{"LOWER": {"IN": ["three", "four", "five", "six", "seven", "eight", "nine", "ten", "1", "2", "3", "4", "5", "6"]}}, 
+             {"LOWER": {"IN": ["times", "time", "x", "daily"]}}, 
              {"LOWER": {"IN": ["daily", "day", "per", "a"]}, "OP": "?"}],
             
             # PRN patterns: "as needed", "prn"
-            [{"LOWER": {"IN": ["as", "prn"]}}, 
-             {"LOWER": {"IN": ["needed", "required", "necessary"]}, "OP": "?"}],
+            [{"LOWER": "prn"}],
+            [{"LOWER": "as"}, {"LOWER": {"IN": ["needed", "required", "necessary"]}}],
             
             # Route patterns: "orally", "by mouth", "IV", "subcutaneous"
             [{"LOWER": {"IN": ["orally", "oral", "po", "iv", "im", "sq", "subq", "subcutaneous", 
@@ -887,13 +453,23 @@ class EnhancedMedicalEntityExtractor:
         
         # Temporal patterns - when conditions occurred
         temporal_patterns = [
-            # Duration: "for 3 days", "x 2 weeks"
+            # Duration (Digits): "for 3 days"
             [{"LOWER": {"IN": ["for", "x"]}}, 
              {"TEXT": {"REGEX": r"\d+"}}, 
              {"LOWER": {"IN": ["day", "days", "week", "weeks", "month", "months", "year", "years", "hr", "hrs", "hours"]}}],
+
+            # Duration (Words): "for three days"
+            [{"LOWER": {"IN": ["for", "x"]}}, 
+             {"LOWER": {"IN": ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]}}, 
+             {"LOWER": {"IN": ["day", "days", "week", "weeks", "month", "months", "year", "years", "hr", "hrs", "hours"]}}],
             
-            # Ago patterns: "3 days ago", "2 weeks prior"
+            # Ago (Digits): "3 days ago"
             [{"TEXT": {"REGEX": r"\d+"}}, 
+             {"LOWER": {"IN": ["day", "days", "week", "weeks", "month", "months", "year", "years"]}}, 
+             {"LOWER": {"IN": ["ago", "prior", "before", "earlier"]}}],
+
+            # Ago (Words): "three days ago"
+            [{"LOWER": {"IN": ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]}}, 
              {"LOWER": {"IN": ["day", "days", "week", "weeks", "month", "months", "year", "years"]}}, 
              {"LOWER": {"IN": ["ago", "prior", "before", "earlier"]}}],
             
@@ -962,22 +538,36 @@ class EnhancedMedicalEntityExtractor:
         for i, pattern in enumerate(severity_patterns):
             self.rule_matcher.add(f"SEVERITY_{i}", [pattern])
         
-        # Lab value patterns
+        # Lab value patterns - WHITELIST BASED
+        # Convert set to list for spaCy pattern
+        lab_term_list = list(self.lab_test_terms)
+        
         lab_patterns = [
-            # Value with unit: "WBC 12.5", "glucose 180 mg/dl"
-            [{"IS_ALPHA": True}, 
-             {"TEXT": {"REGEX": r"\d+\.?\d*"}}, 
-             {"LOWER": {"REGEX": r"\w+/\w+"}, "OP": "?"}],
+            # 1. Name + Number (e.g. "WBC 5.5")
+            [{"LOWER": {"IN": lab_term_list}}, 
+             {"LIKE_NUM": True}],
+             
+            # 2. Name + Number + Unit (e.g. "Glucose 100 mg/dL")
+            [{"LOWER": {"IN": lab_term_list}}, 
+             {"LIKE_NUM": True}, 
+             {"LOWER": {"REGEX": r"^[a-zA-Z0-9/%]+$"}}],
+             
+            # 3. Name + Number + Split Unit (e.g. "Glucose 100 mg / dL")
+            [{"LOWER": {"IN": lab_term_list}}, 
+             {"LIKE_NUM": True}, 
+             {"IS_ALPHA": True},
+             {"ORTH": "/"},
+             {"IS_ALPHA": True}],
             
             # Range patterns: "between 5-10", "within normal limits"
             [{"LOWER": "between"}, 
-             {"TEXT": {"REGEX": r"\d+\.?\d*"}}, 
+             {"LIKE_NUM": True}, 
              {"ORTH": "-"}, 
-             {"TEXT": {"REGEX": r"\d+\.?\d*"}}],
+             {"LIKE_NUM": True}],
             
             # Normal/abnormal: "elevated glucose", "decreased sodium"
             [{"LOWER": {"IN": ["elevated", "increased", "high", "decreased", "low", "reduced", "normal"]}}, 
-             {"IS_ALPHA": True}]
+             {"LOWER": {"IN": lab_term_list}}]
         ]
         
         for i, pattern in enumerate(lab_patterns):
@@ -985,21 +575,24 @@ class EnhancedMedicalEntityExtractor:
         
         # Anatomical location patterns
         location_patterns = [
-            # Laterality: "left lower extremity", "right upper quadrant"
+            # Laterality with specific body parts: "left arm", "right leg"
+            # We restrict the second token to be a likely body part to avoid over-matching
             [{"LOWER": {"IN": ["left", "right", "bilateral"]}}, 
              {"LOWER": {"IN": ["upper", "lower", "mid"]}, "OP": "?"}, 
-             {"IS_ALPHA": True}],
+             {"LOWER": {"IN": ["arm", "leg", "hand", "foot", "shoulder", "knee", "hip", "elbow", "wrist", "ankle", 
+                               "eye", "ear", "lung", "kidney", "breast", "lobe", "ventricle", "atrium", "side", "flank",
+                               "quadrant", "extremity", "lobe"]}}],
             
             # Specific locations: "lower back", "upper abdomen"
             [{"LOWER": {"IN": ["upper", "lower", "mid", "central", "distal", "proximal"]}}, 
-             {"IS_ALPHA": True}],
+             {"LOWER": {"IN": ["back", "abdomen", "chest", "spine", "neck", "thoracic", "lumbar", "sacral"]}}],
             
             # Quadrants: "RUQ", "left lower quadrant"
             [{"TEXT": {"REGEX": r"[RL][UL]Q"}}, {"LOWER": "quadrant", "OP": "?"}]
         ]
         
         for i, pattern in enumerate(location_patterns):
-            self.rule_matcher.add(f"LOCATION_{i}", [pattern])
+            self.rule_matcher.add(f"BODY_PART_{i}", [pattern]) # Changed label from LOCATION to BODY_PART
         
         # Vital sign patterns
         vital_patterns = [
@@ -1147,151 +740,8 @@ class EnhancedMedicalEntityExtractor:
     def _initialize_normalization_maps(self):
         """Initialize comprehensive normalization and standardization maps"""
         
-        # Enhanced abbreviations dictionary
-        self.abbreviations = {
-            # Diseases
-            'mi': 'myocardial infarction',
-            'dm': 'diabetes mellitus',
-            't1dm': 'type 1 diabetes mellitus',
-            't2dm': 'type 2 diabetes mellitus',
-            'htn': 'hypertension',
-            'chf': 'congestive heart failure',
-            'cad': 'coronary artery disease',
-            'ckd': 'chronic kidney disease',
-            'esrd': 'end stage renal disease',
-            'aki': 'acute kidney injury',
-            'copd': 'chronic obstructive pulmonary disease',
-            'uti': 'urinary tract infection',
-            'uri': 'upper respiratory infection',
-            'dvt': 'deep vein thrombosis',
-            'pe': 'pulmonary embolism',
-            'af': 'atrial fibrillation',
-            'afib': 'atrial fibrillation',
-            'pvd': 'peripheral vascular disease',
-            'pad': 'peripheral arterial disease',
-            'cva': 'cerebrovascular accident',
-            'tia': 'transient ischemic attack',
-            'cabg': 'coronary artery bypass graft',
-            'pci': 'percutaneous coronary intervention',
-            'stemi': 'st-elevation myocardial infarction',
-            'nstemi': 'non-st-elevation myocardial infarction',
-            'acs': 'acute coronary syndrome',
-            'gerd': 'gastroesophageal reflux disease',
-            'ibd': 'inflammatory bowel disease',
-            'ra': 'rheumatoid arthritis',
-            'oa': 'osteoarthritis',
-            'ms': 'multiple sclerosis',
-            'als': 'amyotrophic lateral sclerosis',
-            'bph': 'benign prostatic hyperplasia',
-            'pcos': 'polycystic ovary syndrome',
-            'osa': 'obstructive sleep apnea',
-            'adhd': 'attention deficit hyperactivity disorder',
-            'ptsd': 'post-traumatic stress disorder',
-            'ocd': 'obsessive compulsive disorder',
-            'mdd': 'major depressive disorder',
-            'gad': 'generalized anxiety disorder',
-            'hiv': 'human immunodeficiency virus',
-            'aids': 'acquired immunodeficiency syndrome',
-            'hcv': 'hepatitis c virus',
-            'hbv': 'hepatitis b virus',
-            'tb': 'tuberculosis',
-            'mrsa': 'methicillin-resistant staphylococcus aureus',
-            'c diff': 'clostridium difficile',
-            
-            # Symptoms
-            'sob': 'shortness of breath',
-            'cp': 'chest pain',
-            'ha': 'headache',
-            'n/v': 'nausea and vomiting',
-            'loc': 'loss of consciousness',
-            'lbp': 'lower back pain',
-            'rlq': 'right lower quadrant',
-            'ruq': 'right upper quadrant',
-            'llq': 'left lower quadrant',
-            'luq': 'left upper quadrant',
-            
-            # Tests
-            'cbc': 'complete blood count',
-            'bmp': 'basic metabolic panel',
-            'cmp': 'comprehensive metabolic panel',
-            'lfts': 'liver function tests',
-            'pt': 'prothrombin time',
-            'ptt': 'partial thromboplastin time',
-            'inr': 'international normalized ratio',
-            'bnp': 'brain natriuretic peptide',
-            'hba1c': 'hemoglobin a1c',
-            'tsh': 'thyroid stimulating hormone',
-            'psa': 'prostate specific antigen',
-            'ecg': 'electrocardiogram',
-            'ekg': 'electrocardiogram',
-            'echo': 'echocardiogram',
-            'ct': 'computed tomography',
-            'mri': 'magnetic resonance imaging',
-            'cxr': 'chest x-ray',
-            'kub': 'kidney ureter bladder',
-            'ua': 'urinalysis',
-            'abg': 'arterial blood gas',
-            'pft': 'pulmonary function test',
-            'eeg': 'electroencephalogram',
-            'emg': 'electromyography',
-            'lp': 'lumbar puncture',
-            'egd': 'esophagogastroduodenoscopy',
-            'ercp': 'endoscopic retrograde cholangiopancreatography',
-            
-            # Body systems
-            'gi': 'gastrointestinal',
-            'gu': 'genitourinary',
-            'cv': 'cardiovascular',
-            'resp': 'respiratory',
-            'neuro': 'neurological',
-            'psych': 'psychiatric',
-            'derm': 'dermatological',
-            'ent': 'ear nose throat',
-            'msk': 'musculoskeletal',
-            'heent': 'head eyes ears nose throat',
-            'cns': 'central nervous system',
-            'pns': 'peripheral nervous system',
-            
-            # Medications
-            'asa': 'aspirin',
-            'hctz': 'hydrochlorothiazide',
-            'ace-i': 'ace inhibitor',
-            'arb': 'angiotensin receptor blocker',
-            'bb': 'beta blocker',
-            'ccb': 'calcium channel blocker',
-            'ppi': 'proton pump inhibitor',
-            'h2ra': 'h2 receptor antagonist',
-            'nsaid': 'nonsteroidal anti-inflammatory drug',
-            'ssri': 'selective serotonin reuptake inhibitor',
-            'snri': 'serotonin norepinephrine reuptake inhibitor',
-            'tca': 'tricyclic antidepressant',
-            'doac': 'direct oral anticoagulant',
-            'lmwh': 'low molecular weight heparin',
-            
-            # General medical terms
-            'h/o': 'history of',
-            's/p': 'status post',
-            'r/o': 'rule out',
-            'w/': 'with',
-            'w/o': 'without',
-            'c/o': 'complains of',
-            'prn': 'as needed',
-            'qd': 'once daily',
-            'bid': 'twice daily',
-            'tid': 'three times daily',
-            'qid': 'four times daily',
-            'po': 'by mouth',
-            'iv': 'intravenous',
-            'im': 'intramuscular',
-            'sq': 'subcutaneous',
-            'npo': 'nothing by mouth',
-            'dnr': 'do not resuscitate',
-            'dnd': 'do not disturb',
-            'nkda': 'no known drug allergies',
-            'nka': 'no known allergies',
-            'wnl': 'within normal limits',
-            'nad': 'no acute distress'
-        }
+        # Abbreviations are now loaded from medical_data.json
+        # self.abbreviations = { ... } # Removed hardcoded dict
         
         # Create reverse mapping for normalization
         self.normalization_map = {}
@@ -1328,77 +778,94 @@ class EnhancedMedicalEntityExtractor:
                     'category': 'ABBREVIATION'
                 }
     
-    def get_entity_context(self, entity_span, doc):
-        """
-        Extract contextual information about an entity
+    def _initialize_semantic_analyzer(self):
+        """Initialize TF-IDF vectorizer for semantic similarity"""
+        # Combine all medical terms for TF-IDF
+        all_medical_terms = []
+        for category_dict in [self.diseases, self.symptoms, self.medications, self.tests, self.body_parts, self.procedures, self.clinical_findings, self.microorganisms]:
+            for main_term, synonyms in category_dict.items():
+                all_medical_terms.append(main_term)
+                all_medical_terms.extend(synonyms)
         
-        Args:
-            entity_span: The entity span from doc
-            doc: The spaCy Doc object
+        # Add abbreviations
+        all_medical_terms.extend(list(self.abbreviations.keys()))
+        all_medical_terms.extend(list(self.abbreviations.values()))
+
+        self.tfidf_vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 3))
+        if all_medical_terms:
+            self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(all_medical_terms)
+            self.tfidf_terms = all_medical_terms
+        else:
+            self.tfidf_matrix = None
+            self.tfidf_terms = []
+
+    def _initialize_concept_graph(self):
+        """Initialize a graph for medical concept relationships"""
+        self.concept_graph = nx.Graph()
+        
+        # Add nodes for all canonical terms
+        for category_dict in [self.diseases, self.symptoms, self.medications, self.tests, self.body_parts, self.procedures, self.clinical_findings, self.microorganisms]:
+            for main_term in category_dict.keys():
+                self.concept_graph.add_node(main_term.lower(), type=self._identify_entity_type(main_term))
+        
+        # Add edges for known relationships (e.g., disease-symptom, disease-medication)
+        # This part would typically be populated from a more structured knowledge base
+        # For now, we can add some basic inferred relationships
+        
+        # Example: Disease-Symptom relationships
+        for disease, synonyms in self.diseases.items():
+            for symptom, sym_synonyms in self.symptoms.items():
+                # Simple heuristic: if symptom is often mentioned with disease
+                if symptom in ' '.join(synonyms): # Very basic, needs improvement
+                    self.concept_graph.add_edge(disease.lower(), symptom.lower(), relation='has_symptom')
+        
+        # Example: Disease-Medication relationships
+        for disease, dis_synonyms in self.diseases.items():
+            for medication, med_synonyms in self.medications.items():
+                # Simple heuristic: if medication is often used for disease
+                if disease in ' '.join(med_synonyms): # Very basic, needs improvement
+                    self.concept_graph.add_edge(disease.lower(), medication.lower(), relation='treated_by')
+
+
+
+    def _identify_entity_type(self, text):
+        """Identify the type of medical entity"""
+        text_lower = text.lower()
+        
+        # Check against loaded data
+        if hasattr(self, 'medical_data'):
+            # Check diseases
+            for disease, variations in self.medical_data.get('diseases', {}).items():
+                if text_lower == disease.lower() or text_lower in [v.lower() for v in variations]:
+                    return "DISEASE"
             
-        Returns:
-            dict: Context information including negation, certainty, subject, temporality
-        """
-        context = {
-            'negated': False,
-            'uncertain': False,
-            'certainty_level': 'definite',
-            'subject': 'patient',
-            'temporality': 'current',
-            'conditional': False
-        }
+            # Check symptoms
+            for symptom, variations in self.medical_data.get('symptoms', {}).items():
+                if text_lower == symptom.lower() or text_lower in [v.lower() for v in variations]:
+                    return "SYMPTOM"
+            
+            # Check medications
+            for med, variations in self.medical_data.get('medications', {}).items():
+                if text_lower == med.lower() or text_lower in [v.lower() for v in variations]:
+                    return "MEDICATION"
+            
+            # Check tests
+            for test, variations in self.medical_data.get('tests', {}).items():
+                if text_lower == test.lower() or text_lower in [v.lower() for v in variations]:
+                    return "TEST"
+            
+            # Check body parts
+            for part, variations in self.medical_data.get('body_parts', {}).items():
+                if text_lower == part.lower() or text_lower in [v.lower() for v in variations]:
+                    return "BODY_PART"
+            
+            # Check procedures
+            for proc, variations in self.medical_data.get('procedures', {}).items():
+                if text_lower == proc.lower() or text_lower in [v.lower() for v in variations]:
+                    return "PROCEDURE"
         
-        # Check tokens before the entity (window of 6 tokens)
-        start_idx = max(0, entity_span.start - self.negation_scope)
-        preceding_tokens = doc[start_idx:entity_span.start]
-        preceding_text = ' '.join([token.text.lower() for token in preceding_tokens])
-        
-        # Check for negation
-        for neg_type, neg_terms in self.negation_triggers.items():
-            for neg_term in neg_terms:
-                if neg_term in preceding_text:
-                    # Check if it's a pseudo-negation
-                    is_pseudo = any(pseudo in preceding_text for pseudo in self.pseudo_negations)
-                    if not is_pseudo:
-                        context['negated'] = True
-                        break
-        
-        # Check for uncertainty
-        for certainty_level, terms in self.uncertainty_indicators.items():
-            for term in terms:
-                if term in preceding_text:
-                    context['uncertain'] = True
-                    context['certainty_level'] = certainty_level.replace('_uncertainty', '')
-                    break
-        
-        # Check for assertion (overrides uncertainty)
-        for assertion_term in self.assertion_indicators:
-            if assertion_term in preceding_text:
-                context['uncertain'] = False
-                context['certainty_level'] = 'definite'
-                break
-        
-        # Check subject
-        for subject_type, terms in self.subject_indicators.items():
-            for term in terms:
-                if term in preceding_text:
-                    context['subject'] = subject_type
-                    break
-        
-        # Check temporality
-        for temp_type, terms in self.historical_indicators.items():
-            for term in terms:
-                if term in preceding_text:
-                    context['temporality'] = temp_type
-                    break
-        
-        # Check if conditional
-        for cond_term in self.conditional_indicators:
-            if cond_term in preceding_text:
-                context['conditional'] = True
-                break
-        
-        return context
+        return "UNKNOWN"
+       
     def preprocess_text(self, text: str) -> str:
         """Enhanced text preprocessing"""
         
@@ -1407,7 +874,7 @@ class EnhancedMedicalEntityExtractor:
         
         # Handle common medical formatting
         text = re.sub(r'\b(\d+)\s*-\s*(\d+)\b', r'\1-\2', text)  # ranges
-        text = re.sub(r'\b(\d+\.?\d*)\s*(mg|g|ml|cc)\b', r'\1\2', text)  # dosages
+        text = re.sub(r'\b(\d+\.?\d*)\s*(mg|g|ml|cc|dL|L|kg|lbs)\b', r'\1 \2', text, flags=re.IGNORECASE)  # ensure space for dosages
         
         # Expand abbreviations
         for abbr, expansion in self.abbreviations.items():
@@ -1454,24 +921,56 @@ class EnhancedMedicalEntityExtractor:
     
     def extract_with_patterns(self, doc) -> List[MedicalEntity]:
         """Extract entities using rule-based patterns"""
+        
         entities = []
         
+        # Apply all rule patterns
         matches = self.rule_matcher(doc)
+        
         for match_id, start, end in matches:
             span = doc[start:end]
-            label = self.nlp.vocab.strings[match_id].split('_')[0]
+            match_id_string = self.nlp.vocab.strings[match_id]
             
+            # Determine label and confidence
+            label = "UNKNOWN"
+            confidence = 0.85
+            
+            if "DOSAGE" in match_id_string:
+                label = "DOSAGE"
+                confidence = 0.88
+            elif "TIME" in match_id_string:
+                label = "TIME"
+                confidence = 0.75
+            elif "LAB_VALUE" in match_id_string:
+                label = "LAB_VALUE"
+                confidence = 0.96  # Higher confidence
+            elif "LAB" in match_id_string: # Fallback for generic LAB
+                label = "LAB_VALUE"
+                confidence = 0.90
+            elif "SEVERITY" in match_id_string:
+                label = "SEVERITY"
+                confidence = 0.88
+            elif "BODY_PART" in match_id_string:
+                label = "BODY_PART"
+                confidence = 0.90
+            elif "VITAL_SIGN" in match_id_string:
+                label = "VITAL_SIGN"
+                confidence = 0.96
+            elif "PROCEDURE" in match_id_string:
+                label = "PROCEDURE"
+                confidence = 0.90
+            
+            # Create MedicalEntity object
             entity = MedicalEntity(
                 text=span.text,
                 label=label,
                 start=span.start_char,
                 end=span.end_char,
-                confidence=0.88,
+                confidence=confidence,
                 source_method="rule_pattern"
             )
-            
             entities.append(entity)
-        
+            
         return entities
     
     def extract_contextual_entities(self, doc) -> List[MedicalEntity]:
@@ -1590,15 +1089,16 @@ class EnhancedMedicalEntityExtractor:
         context_text = ' '.join(surrounding_tokens)
         
         # Classification based on context
-        if any(word in context_text for word in ['diagnose', 'diagnosed', 'condition', 'disease']):
+        # Classification based on context
+        if any(word in context_text for word in ['diagnose', 'diagnosed', 'condition', 'disease', 'disorder', 'syndrome']):
             return 'DISEASE'
-        elif any(word in context_text for word in ['complains', 'reports', 'feels', 'experiencing']):
+        elif any(word in context_text for word in ['complains', 'reports', 'feels', 'experiencing', 'suffering', 'pain']):
             return 'SYMPTOM'
-        elif any(word in context_text for word in ['prescribed', 'taking', 'medication', 'drug']):
+        elif any(word in context_text for word in ['prescribed', 'taking', 'medication', 'drug', 'dose', 'mg', 'tablet']):
             return 'MEDICATION'
-        elif any(word in context_text for word in ['test', 'scan', 'examination', 'lab']):
+        elif any(word in context_text for word in ['test', 'scan', 'examination', 'lab', 'level', 'result']):
             return 'TEST'
-        elif any(word in context_text for word in ['procedure', 'surgery', 'operation']):
+        elif any(word in context_text for word in ['procedure', 'surgery', 'operation', 'resection', 'repair']):
             return 'PROCEDURE'
         
         # Use semantic similarity if available
@@ -1637,7 +1137,7 @@ class EnhancedMedicalEntityExtractor:
             
             return results
         except Exception as e:
-            print(f"Warning: Semantic similarity computation failed: {e}")
+            logger.warning(f"Semantic similarity computation failed: {e}")
             return []
     
     def get_term_category(self, term: str) -> str:
@@ -1695,7 +1195,7 @@ class EnhancedMedicalEntityExtractor:
             # Keep index aligned with matrix row order
             self.term_index = {term: i for i, term in enumerate(deduped_terms)}
         except Exception as e:
-            print(f"Warning: Failed to initialize semantic analyzer: {e}")
+            logger.warning(f"Failed to initialize semantic analyzer: {e}")
             self.tfidf_vectorizer = None
             self.tfidf_matrix = None
             self.term_index = {}
@@ -1721,7 +1221,7 @@ class EnhancedMedicalEntityExtractor:
                             # Connect synonym to main term
                             self.concept_graph.add_edge(main, s, relation='synonym')
         except Exception as e:
-            print(f"Warning: Failed to initialize concept graph: {e}")
+            logger.warning(f"Failed to initialize concept graph: {e}")
             self.concept_graph = nx.Graph()
     
     def analyze_context(self, entity: MedicalEntity, doc, text: str) -> MedicalEntity:
@@ -1739,6 +1239,18 @@ class EnhancedMedicalEntityExtractor:
         if hasattr(doc._, "negations"):
             for neg_start, neg_end in doc._.negations:
                 if entity.start >= neg_start and entity.end <= neg_end:
+                    entity.negated = True
+                    break
+
+        # Check for negation (following)
+        if not entity.negated:
+            # Look at text immediately following the entity
+            post_entity_start = entity.end
+            post_entity_end = min(len(text), entity.end + 50)
+            post_text = text[post_entity_start:post_entity_end].lower()
+            
+            for neg_term in ['ruled out', 'negative', 'absent', 'unlikely']:
+                if neg_term in post_text:
                     entity.negated = True
                     break
 
@@ -1794,7 +1306,8 @@ class EnhancedMedicalEntityExtractor:
             "TIME": "TIME",
             "MONEY": None,
             "PERCENT": None,
-            "QUANTITY": "DOSAGE"
+            "QUANTITY": "DOSAGE",
+            "CARDINAL": None # Skip cardinal numbers unless caught by other patterns
         }
         
         return spacy_mapping.get(label, None)
@@ -1805,8 +1318,8 @@ class EnhancedMedicalEntityExtractor:
         if not entities:
             return entities
         
-        # Sort by start position
-        entities.sort(key=lambda x: (x.start, -x.confidence))
+        # Sort by start position, then confidence (desc), then length (desc)
+        entities.sort(key=lambda x: (x.start, -x.confidence, -(x.end - x.start)))
         
         filtered_entities = []
         for entity in entities:
@@ -1854,7 +1367,12 @@ class EnhancedMedicalEntityExtractor:
             'day', 'week', 'month', 'year', 'time', 'today', 'yesterday',
             'hospital', 'clinic', 'doctor', 'nurse', 'physician',
             'good', 'bad', 'better', 'worse', 'normal', 'abnormal',
-            'some', 'many', 'few', 'several', 'other', 'another'
+            'some', 'many', 'few', 'several', 'other', 'another',
+            'condition', 'problem', 'result', 'results', 'level', 'levels',
+            'care', 'health', 'history', 'complaint', 'complaints',
+            'cardiology', 'oncology', 'neurology', 'dermatology', 'radiology', 'pathology', 'surgery',
+            'pediatrics', 'psychiatry', 'urology', 'nephrology', 'gastroenterology', 'hematology',
+            'endocrinology', 'rheumatology', 'pulmonology', 'immunology', 'anesthesiology'
         }
         
         return text.lower() in generic_terms or len(text) < 2
@@ -1881,6 +1399,18 @@ class EnhancedMedicalEntityExtractor:
         
         entity.semantic_type = semantic_types.get(entity.label, 'unknown')
         
+        # Standardize labels
+        if entity.label == 'LAB':
+            entity.label = 'LAB_VALUE'
+        elif entity.label == 'BODY':
+            entity.label = 'BODY_PART'
+        elif entity.label == 'VITAL':
+            entity.label = 'VITAL_SIGN'
+            
+        # If a TEST has a value (number) in it, upgrade it to LAB_VALUE
+        if entity.label == 'TEST' and any(char.isdigit() for char in entity.text):
+            entity.label = 'LAB_VALUE'
+            
         return entity
     
     def extract_entities(self, text: str) -> List[MedicalEntity]:

@@ -1,0 +1,2934 @@
+{
+    "lab_tests": {
+        "blood pressure": [
+            "bp",
+            "systolic",
+            "diastolic",
+            "map"
+        ],
+        "heart rate": [
+            "hr",
+            "pulse",
+            "bpm"
+        ],
+        "respiratory rate": [
+            "rr",
+            "respirations"
+        ],
+        "temperature": [
+            "temp",
+            "body temp"
+        ],
+        "oxygen saturation": [
+            "o2 sat",
+            "spo2",
+            "sao2"
+        ],
+        "weight": [
+            "wt",
+            "body weight",
+            "bmi",
+            "body mass index"
+        ],
+        "height": [
+            "ht",
+            "stature"
+        ],
+        "glucose": [
+            "blood sugar",
+            "fbg",
+            "hba1c",
+            "a1c",
+            "hemoglobin a1c"
+        ],
+        "cholesterol": [
+            "lipid panel",
+            "ldl",
+            "hdl",
+            "triglycerides",
+            "total cholesterol"
+        ],
+        "complete blood count": [
+            "cbc",
+            "wbc",
+            "rbc",
+            "hemoglobin",
+            "hgb",
+            "hematocrit",
+            "hct",
+            "platelets",
+            "plt"
+        ],
+        "metabolic panel": [
+            "bmp",
+            "cmp",
+            "sodium",
+            "potassium",
+            "chloride",
+            "calcium",
+            "bun",
+            "creatinine",
+            "glucose",
+            "co2"
+        ],
+        "liver function": [
+            "lft",
+            "alt",
+            "ast",
+            "alp",
+            "bilirubin",
+            "albumin",
+            "protein"
+        ],
+        "kidney function": [
+            "gfr",
+            "egfr",
+            "creatinine clearance"
+        ],
+        "cardiac markers": [
+            "troponin",
+            "ck-mb",
+            "bnp",
+            "nt-probnp",
+            "myoglobin"
+        ],
+        "coagulation": [
+            "pt",
+            "inr",
+            "ptt",
+            "aptt"
+        ],
+        "thyroid": [
+            "tsh",
+            "t3",
+            "t4",
+            "free t4"
+        ],
+        "inflammation": [
+            "crp",
+            "esr",
+            "sed rate"
+        ],
+        "vitamins": [
+            "vitamin d",
+            "b12",
+            "folate",
+            "iron",
+            "ferritin"
+        ],
+        "urine": [
+            "urinalysis",
+            "ua",
+            "specific gravity",
+            "ph"
+        ]
+    },
+    "diseases": {
+        "diabetes": [
+            "diabetes mellitus",
+            "dm",
+            "diabetic",
+            "hyperglycemia",
+            "type 1 diabetes",
+            "type 2 diabetes",
+            "t1dm",
+            "t2dm",
+            "insulin dependent",
+            "non-insulin dependent",
+            "gestational diabetes"
+        ],
+        "hypertension": [
+            "high blood pressure",
+            "htn",
+            "hypertensive",
+            "elevated bp",
+            "essential hypertension",
+            "secondary hypertension",
+            "malignant hypertension"
+        ],
+        "myocardial infarction": [
+            "heart attack",
+            "mi",
+            "stemi",
+            "nstemi",
+            "acute mi",
+            "cardiac infarction",
+            "coronary occlusion",
+            "acute coronary syndrome",
+            "acs"
+        ],
+        "pneumonia": [
+            "pneumonitis",
+            "lung infection",
+            "pulmonary infection",
+            "lobar pneumonia",
+            "bronchopneumonia",
+            "aspiration pneumonia",
+            "cap",
+            "hap"
+        ],
+        "asthma": [
+            "bronchial asthma",
+            "asthmatic",
+            "reactive airway disease",
+            "exercise-induced asthma",
+            "allergic asthma"
+        ],
+        "copd": [
+            "chronic obstructive pulmonary disease",
+            "emphysema",
+            "chronic bronchitis",
+            "obstructive lung disease"
+        ],
+        "heart failure": [
+            "congestive heart failure",
+            "chf",
+            "cardiac failure",
+            "hf",
+            "left ventricular failure",
+            "right heart failure",
+            "systolic dysfunction",
+            "diastolic dysfunction"
+        ],
+        "stroke": [
+            "cerebrovascular accident",
+            "cva",
+            "brain attack",
+            "cerebral infarction",
+            "ischemic stroke",
+            "hemorrhagic stroke",
+            "tia",
+            "transient ischemic attack"
+        ],
+        "depression": [
+            "major depressive disorder",
+            "mdd",
+            "depressive episode",
+            "clinical depression",
+            "unipolar depression"
+        ],
+        "anxiety": [
+            "anxiety disorder",
+            "generalized anxiety",
+            "panic disorder",
+            "gad",
+            "social anxiety",
+            "phobia"
+        ],
+        "arthritis": [
+            "osteoarthritis",
+            "rheumatoid arthritis",
+            "ra",
+            "oa",
+            "joint inflammation",
+            "degenerative joint disease",
+            "djd"
+        ],
+        "cancer": [
+            "malignancy",
+            "tumor",
+            "neoplasm",
+            "carcinoma",
+            "sarcoma",
+            "lymphoma",
+            "leukemia",
+            "metastasis",
+            "adenocarcinoma"
+        ],
+        "infection": [
+            "sepsis",
+            "bacteremia",
+            "infectious disease",
+            "septicemia",
+            "systemic infection",
+            "localized infection"
+        ],
+        "kidney disease": [
+            "chronic kidney disease",
+            "ckd",
+            "renal failure",
+            "nephropathy",
+            "esrd",
+            "end stage renal disease",
+            "acute kidney injury",
+            "aki"
+        ],
+        "liver disease": [
+            "hepatitis",
+            "cirrhosis",
+            "hepatic failure",
+            "liver cirrhosis",
+            "fatty liver",
+            "nafld",
+            "alcoholic liver disease"
+        ],
+        "atrial fibrillation": [
+            "afib",
+            "af",
+            "atrial flutter",
+            "arrhythmia",
+            "irregular heartbeat"
+        ],
+        "pulmonary embolism": [
+            "pe",
+            "lung embolism",
+            "pulmonary thromboembolism"
+        ],
+        "deep vein thrombosis": [
+            "dvt",
+            "venous thrombosis",
+            "leg clot"
+        ],
+        "hypothyroidism": [
+            "underactive thyroid",
+            "low thyroid",
+            "myxedema"
+        ],
+        "hyperthyroidism": [
+            "overactive thyroid",
+            "thyrotoxicosis",
+            "graves disease"
+        ],
+        "anemia": [
+            "low hemoglobin",
+            "iron deficiency anemia",
+            "pernicious anemia",
+            "aplastic anemia"
+        ],
+        "osteoporosis": [
+            "bone loss",
+            "low bone density",
+            "osteopenia"
+        ],
+        "peptic ulcer": [
+            "gastric ulcer",
+            "duodenal ulcer",
+            "stomach ulcer",
+            "pud"
+        ],
+        "gerd": [
+            "gastroesophageal reflux disease",
+            "acid reflux",
+            "heartburn",
+            "reflux"
+        ],
+        "pancreatitis": [
+            "pancreatic inflammation",
+            "acute pancreatitis",
+            "chronic pancreatitis"
+        ],
+        "cholecystitis": [
+            "gallbladder inflammation",
+            "acute cholecystitis"
+        ],
+        "appendicitis": [
+            "acute appendicitis",
+            "inflamed appendix"
+        ],
+        "diverticulitis": [
+            "diverticular disease",
+            "colonic diverticulitis"
+        ],
+        "celiac disease": [
+            "gluten sensitivity",
+            "celiac sprue",
+            "gluten enteropathy"
+        ],
+        "crohn disease": [
+            "crohns",
+            "inflammatory bowel disease",
+            "ibd",
+            "regional enteritis"
+        ],
+        "ulcerative colitis": [
+            "uc",
+            "colitis",
+            "inflammatory bowel disease"
+        ],
+        "multiple sclerosis": [
+            "ms",
+            "demyelinating disease"
+        ],
+        "parkinson disease": [
+            "parkinsons",
+            "pd",
+            "parkinsonism"
+        ],
+        "alzheimer disease": [
+            "alzheimers",
+            "dementia",
+            "senile dementia"
+        ],
+        "epilepsy": [
+            "seizure disorder",
+            "convulsions",
+            "epileptic"
+        ],
+        "migraine": [
+            "migraine headache",
+            "vascular headache"
+        ],
+        "glaucoma": [
+            "increased intraocular pressure",
+            "iop",
+            "optic neuropathy"
+        ],
+        "cataracts": [
+            "lens opacity",
+            "cloudy lens"
+        ],
+        "macular degeneration": [
+            "amd",
+            "age-related macular degeneration"
+        ],
+        "psoriasis": [
+            "plaque psoriasis",
+            "psoriatic"
+        ],
+        "eczema": [
+            "atopic dermatitis",
+            "dermatitis"
+        ],
+        "lupus": [
+            "sle",
+            "systemic lupus erythematosus",
+            "lupus erythematosus"
+        ],
+        "scleroderma": [
+            "systemic sclerosis",
+            "hardening of skin"
+        ],
+        "gout": [
+            "gouty arthritis",
+            "hyperuricemia",
+            "uric acid arthritis"
+        ],
+        "benign prostatic hyperplasia": [
+            "bph",
+            "enlarged prostate",
+            "prostatic hypertrophy"
+        ],
+        "urinary tract infection": [
+            "uti",
+            "bladder infection",
+            "cystitis",
+            "pyelonephritis"
+        ],
+        "endometriosis": [
+            "endometrial implants"
+        ],
+        "polycystic ovary syndrome": [
+            "pcos",
+            "polycystic ovarian syndrome"
+        ],
+        "hyperlipidemia": [
+            "high cholesterol",
+            "dyslipidemia",
+            "hypercholesterolemia"
+        ],
+        "metabolic syndrome": [
+            "syndrome x",
+            "insulin resistance syndrome"
+        ],
+        "obesity": [
+            "overweight",
+            "morbid obesity",
+            "bmi over 30"
+        ],
+        "sleep apnea": [
+            "obstructive sleep apnea",
+            "osa",
+            "sleep disordered breathing"
+        ],
+        "schizophrenia": [
+            "psychotic disorder",
+            "psychosis"
+        ],
+        "bipolar disorder": [
+            "manic depression",
+            "bipolar affective disorder"
+        ],
+        "adhd": [
+            "attention deficit hyperactivity disorder",
+            "add",
+            "attention deficit disorder"
+        ],
+        "autism": [
+            "autism spectrum disorder",
+            "asd",
+            "autistic"
+        ],
+        "tuberculosis": [
+            "tb",
+            "pulmonary tuberculosis",
+            "mycobacterial infection"
+        ],
+        "hiv": [
+            "human immunodeficiency virus",
+            "aids",
+            "acquired immunodeficiency syndrome"
+        ],
+        "hepatitis c": [
+            "hcv",
+            "hep c"
+        ],
+        "hepatitis b": [
+            "hbv",
+            "hep b"
+        ],
+        "lyme disease": [
+            "borrelia",
+            "tick-borne illness"
+        ],
+        "meningitis": [
+            "meningeal inflammation",
+            "bacterial meningitis",
+            "viral meningitis"
+        ],
+        "encephalitis": [
+            "brain inflammation",
+            "viral encephalitis"
+        ]
+    },
+    "symptoms": {
+        "chest pain": [
+            "chest discomfort",
+            "thoracic pain",
+            "angina",
+            "chest tightness",
+            "substernal pain",
+            "precordial pain",
+            "retrosternal pain"
+        ],
+        "shortness of breath": [
+            "dyspnea",
+            "breathlessness",
+            "sob",
+            "respiratory distress",
+            "air hunger",
+            "difficulty breathing"
+        ],
+        "abdominal pain": [
+            "stomach pain",
+            "belly pain",
+            "abdominal discomfort",
+            "epigastric pain",
+            "lower abdominal pain",
+            "upper abdominal pain"
+        ],
+        "headache": [
+            "cephalgia",
+            "head pain",
+            "migraine",
+            "tension headache",
+            "cluster headache"
+        ],
+        "nausea": [
+            "feeling sick",
+            "queasiness",
+            "stomach upset",
+            "nauseous"
+        ],
+        "vomiting": [
+            "emesis",
+            "throwing up",
+            "retching",
+            "vomited"
+        ],
+        "fever": [
+            "pyrexia",
+            "elevated temperature",
+            "febrile",
+            "hyperthermia",
+            "high temperature"
+        ],
+        "fatigue": [
+            "tiredness",
+            "exhaustion",
+            "weakness",
+            "malaise",
+            "lethargy",
+            "asthenia"
+        ],
+        "dizziness": [
+            "vertigo",
+            "lightheadedness",
+            "giddiness",
+            "spinning sensation",
+            "unsteadiness"
+        ],
+        "palpitations": [
+            "heart racing",
+            "rapid heartbeat",
+            "tachycardia",
+            "irregular heartbeat",
+            "heart fluttering"
+        ],
+        "swelling": [
+            "edema",
+            "fluid retention",
+            "bloating",
+            "peripheral edema",
+            "ankle swelling"
+        ],
+        "rash": [
+            "skin eruption",
+            "dermatitis",
+            "skin irritation",
+            "erythema",
+            "hives",
+            "urticaria"
+        ],
+        "joint pain": [
+            "arthralgia",
+            "joint ache",
+            "joint stiffness",
+            "joint swelling"
+        ],
+        "back pain": [
+            "lumbar pain",
+            "spinal pain",
+            "backache",
+            "lower back pain",
+            "upper back pain"
+        ],
+        "cough": [
+            "productive cough",
+            "dry cough",
+            "persistent cough",
+            "chronic cough",
+            "hemoptysis"
+        ],
+        "wheezing": [
+            "bronchospasm",
+            "whistling breath",
+            "stridor"
+        ],
+        "syncope": [
+            "fainting",
+            "loss of consciousness",
+            "passing out",
+            "blackout"
+        ],
+        "confusion": [
+            "altered mental status",
+            "disorientation",
+            "delirium",
+            "mental confusion"
+        ],
+        "seizure": [
+            "convulsion",
+            "fit",
+            "epileptic episode",
+            "tonic-clonic seizure"
+        ],
+        "bleeding": [
+            "hemorrhage",
+            "blood loss",
+            "hematoma",
+            "bruising",
+            "ecchymosis"
+        ],
+        "numbness": [
+            "paresthesia",
+            "tingling",
+            "loss of sensation",
+            "pins and needles"
+        ],
+        "vision changes": [
+            "blurred vision",
+            "diplopia",
+            "double vision",
+            "visual disturbance",
+            "loss of vision"
+        ],
+        "hearing loss": [
+            "deafness",
+            "auditory impairment",
+            "hearing impairment"
+        ],
+        "tinnitus": [
+            "ringing in ears",
+            "ear ringing",
+            "buzzing in ears"
+        ],
+        "difficulty swallowing": [
+            "dysphagia",
+            "swallowing difficulty",
+            "odynophagia"
+        ],
+        "hoarseness": [
+            "voice changes",
+            "dysphonia",
+            "raspy voice"
+        ],
+        "sore throat": [
+            "pharyngitis",
+            "throat pain",
+            "odynophagia"
+        ],
+        "difficulty urinating": [
+            "dysuria",
+            "urinary retention",
+            "hesitancy",
+            "painful urination"
+        ],
+        "frequent urination": [
+            "polyuria",
+            "urinary frequency",
+            "nocturia"
+        ],
+        "incontinence": [
+            "urinary incontinence",
+            "loss of bladder control",
+            "enuresis"
+        ],
+        "diarrhea": [
+            "loose stools",
+            "frequent bowel movements",
+            "watery stools"
+        ],
+        "constipation": [
+            "hard stools",
+            "infrequent bowel movements",
+            "difficulty passing stool"
+        ],
+        "blood in stool": [
+            "melena",
+            "hematochezia",
+            "rectal bleeding",
+            "black tarry stools"
+        ],
+        "jaundice": [
+            "icterus",
+            "yellow skin",
+            "yellowing",
+            "hyperbilirubinemia"
+        ],
+        "weight loss": [
+            "unintentional weight loss",
+            "cachexia",
+            "wasting"
+        ],
+        "weight gain": [
+            "weight increase",
+            "obesity"
+        ],
+        "night sweats": [
+            "nocturnal sweats",
+            "diaphoresis",
+            "excessive sweating"
+        ],
+        "chills": [
+            "rigors",
+            "shaking",
+            "shivering"
+        ],
+        "tremor": [
+            "shaking",
+            "trembling",
+            "involuntary movement"
+        ],
+        "muscle weakness": [
+            "myasthenia",
+            "weakness",
+            "muscle fatigue"
+        ],
+        "muscle pain": [
+            "myalgia",
+            "muscle ache",
+            "muscle soreness"
+        ],
+        "stiffness": [
+            "rigidity",
+            "joint stiffness",
+            "morning stiffness"
+        ],
+        "anxiety symptoms": [
+            "nervousness",
+            "panic",
+            "worry",
+            "restlessness"
+        ],
+        "depression symptoms": [
+            "sadness",
+            "low mood",
+            "anhedonia",
+            "hopelessness"
+        ],
+        "insomnia": [
+            "sleep disturbance",
+            "difficulty sleeping",
+            "sleeplessness"
+        ],
+        "excessive thirst": [
+            "polydipsia",
+            "increased thirst"
+        ],
+        "excessive hunger": [
+            "polyphagia",
+            "increased appetite"
+        ]
+    },
+    "medications": {
+        "aspirin": [
+            "acetylsalicylic acid",
+            "asa",
+            "bayer",
+            "ecotrin"
+        ],
+        "metformin": [
+            "glucophage",
+            "fortamet",
+            "glumetza",
+            "riomet"
+        ],
+        "lisinopril": [
+            "prinivil",
+            "zestril",
+            "ace inhibitor"
+        ],
+        "atenolol": [
+            "tenormin",
+            "beta blocker"
+        ],
+        "simvastatin": [
+            "zocor",
+            "statin"
+        ],
+        "atorvastatin": [
+            "lipitor",
+            "statin"
+        ],
+        "omeprazole": [
+            "prilosec",
+            "proton pump inhibitor",
+            "ppi"
+        ],
+        "pantoprazole": [
+            "protonix",
+            "ppi"
+        ],
+        "insulin": [
+            "insulin glargine",
+            "lantus",
+            "humalog",
+            "novolog",
+            "insulin aspart",
+            "insulin lispro"
+        ],
+        "warfarin": [
+            "coumadin",
+            "anticoagulant",
+            "blood thinner"
+        ],
+        "apixaban": [
+            "eliquis",
+            "anticoagulant",
+            "doac",
+            "novel anticoagulant"
+        ],
+        "rivaroxaban": [
+            "xarelto",
+            "anticoagulant"
+        ],
+        "prednisone": [
+            "prednisolone",
+            "corticosteroid",
+            "steroid"
+        ],
+        "dexamethasone": [
+            "decadron",
+            "steroid"
+        ],
+        "morphine": [
+            "opioid",
+            "narcotic",
+            "pain medication"
+        ],
+        "oxycodone": [
+            "oxycontin",
+            "percocet",
+            "opioid"
+        ],
+        "hydrocodone": [
+            "vicodin",
+            "norco",
+            "opioid"
+        ],
+        "furosemide": [
+            "lasix",
+            "diuretic",
+            "water pill",
+            "loop diuretic"
+        ],
+        "hydrochlorothiazide": [
+            "hctz",
+            "microzide",
+            "diuretic",
+            "thiazide"
+        ],
+        "albuterol": [
+            "ventolin",
+            "proair",
+            "bronchodilator",
+            "beta agonist"
+        ],
+        "levothyroxine": [
+            "synthroid",
+            "levoxyl",
+            "thyroid hormone"
+        ],
+        "amlodipine": [
+            "norvasc",
+            "calcium channel blocker",
+            "ccb"
+        ],
+        "metoprolol": [
+            "lopressor",
+            "toprol",
+            "beta blocker"
+        ],
+        "carvedilol": [
+            "coreg",
+            "beta blocker"
+        ],
+        "losartan": [
+            "cozaar",
+            "arb",
+            "angiotensin receptor blocker"
+        ],
+        "valsartan": [
+            "diovan",
+            "arb"
+        ],
+        "clopidogrel": [
+            "plavix",
+            "antiplatelet",
+            "blood thinner"
+        ],
+        "amoxicillin": [
+            "amoxil",
+            "antibiotic",
+            "penicillin"
+        ],
+        "azithromycin": [
+            "zithromax",
+            "z-pak",
+            "antibiotic",
+            "macrolide"
+        ],
+        "ciprofloxacin": [
+            "cipro",
+            "antibiotic",
+            "fluoroquinolone"
+        ],
+        "doxycycline": [
+            "vibramycin",
+            "antibiotic"
+        ],
+        "cephalexin": [
+            "keflex",
+            "antibiotic",
+            "cephalosporin"
+        ],
+        "fluoxetine": [
+            "prozac",
+            "ssri",
+            "antidepressant"
+        ],
+        "sertraline": [
+            "zoloft",
+            "ssri",
+            "antidepressant"
+        ],
+        "escitalopram": [
+            "lexapro",
+            "ssri"
+        ],
+        "duloxetine": [
+            "cymbalta",
+            "snri"
+        ],
+        "gabapentin": [
+            "neurontin",
+            "anticonvulsant",
+            "neuropathic pain medication"
+        ],
+        "pregabalin": [
+            "lyrica",
+            "anticonvulsant"
+        ],
+        "lorazepam": [
+            "ativan",
+            "benzodiazepine",
+            "benzo"
+        ],
+        "alprazolam": [
+            "xanax",
+            "benzodiazepine"
+        ],
+        "diazepam": [
+            "valium",
+            "benzodiazepine"
+        ],
+        "zolpidem": [
+            "ambien",
+            "sleep medication",
+            "hypnotic"
+        ],
+        "tramadol": [
+            "ultram",
+            "pain medication",
+            "analgesic"
+        ],
+        "ibuprofen": [
+            "advil",
+            "motrin",
+            "nsaid",
+            "anti-inflammatory"
+        ],
+        "naproxen": [
+            "aleve",
+            "naprosyn",
+            "nsaid"
+        ],
+        "acetaminophen": [
+            "tylenol",
+            "paracetamol",
+            "analgesic"
+        ],
+        "montelukast": [
+            "singulair",
+            "leukotriene inhibitor"
+        ],
+        "allopurinol": [
+            "zyloprim",
+            "gout medication"
+        ],
+        "tamsulosin": [
+            "flomax",
+            "alpha blocker"
+        ],
+        "finasteride": [
+            "proscar",
+            "propecia",
+            "5-alpha reductase inhibitor"
+        ],
+        "digoxin": [
+            "lanoxin",
+            "cardiac glycoside"
+        ],
+        "spironolactone": [
+            "aldactone",
+            "potassium sparing diuretic"
+        ],
+        "nitroglycerin": [
+            "nitro",
+            "nitrate",
+            "angina medication"
+        ],
+        "heparin": [
+            "anticoagulant",
+            "blood thinner"
+        ],
+        "enoxaparin": [
+            "lovenox",
+            "low molecular weight heparin",
+            "lmwh"
+        ],
+        "vancomycin": [
+            "vancocin",
+            "antibiotic"
+        ],
+        "methylprednisolone": [
+            "medrol",
+            "solu-medrol",
+            "steroid"
+        ],
+        "ranitidine": [
+            "zantac",
+            "h2 blocker"
+        ],
+        "famotidine": [
+            "pepcid",
+            "h2 blocker"
+        ],
+        "diphenhydramine": [
+            "benadryl",
+            "antihistamine"
+        ],
+        "cetirizine": [
+            "zyrtec",
+            "antihistamine"
+        ],
+        "fexofenadine": [
+            "allegra",
+            "antihistamine"
+        ],
+        "ondansetron": [
+            "zofran",
+            "antiemetic"
+        ],
+        "metoclopramide": [
+            "reglan",
+            "antiemetic",
+            "prokinetic"
+        ]
+    },
+    "tests": {
+        "electrocardiogram": [
+            "ecg",
+            "ekg",
+            "12-lead ecg",
+            "cardiac monitoring"
+        ],
+        "computed tomography": [
+            "ct scan",
+            "cat scan",
+            "ct",
+            "ct imaging"
+        ],
+        "magnetic resonance imaging": [
+            "mri",
+            "mri scan",
+            "magnetic resonance"
+        ],
+        "complete blood count": [
+            "cbc",
+            "full blood count",
+            "hemogram"
+        ],
+        "comprehensive metabolic panel": [
+            "cmp",
+            "metabolic panel",
+            "chemistry panel"
+        ],
+        "basic metabolic panel": [
+            "bmp",
+            "chem 7",
+            "electrolytes"
+        ],
+        "lipid panel": [
+            "cholesterol panel",
+            "lipid profile",
+            "fasting lipids"
+        ],
+        "liver function tests": [
+            "lfts",
+            "hepatic panel",
+            "liver panel"
+        ],
+        "renal function tests": [
+            "kidney function",
+            "creatinine",
+            "bun"
+        ],
+        "blood urea nitrogen": [
+            "bun"
+        ],
+        "creatinine": [
+            "serum creatinine",
+            "scr"
+        ],
+        "glomerular filtration rate": [
+            "gfr",
+            "egfr",
+            "estimated gfr"
+        ],
+        "brain natriuretic peptide": [
+            "bnp",
+            "pro-bnp",
+            "nt-probnp"
+        ],
+        "troponin": [
+            "cardiac troponin",
+            "troponin i",
+            "troponin t"
+        ],
+        "hemoglobin a1c": [
+            "hba1c",
+            "glycated hemoglobin",
+            "glycohemoglobin",
+            "a1c"
+        ],
+        "thyroid stimulating hormone": [
+            "tsh",
+            "thyrotropin"
+        ],
+        "free t4": [
+            "thyroxine",
+            "free thyroxine"
+        ],
+        "free t3": [
+            "triiodothyronine"
+        ],
+        "prostate specific antigen": [
+            "psa"
+        ],
+        "urinalysis": [
+            "ua",
+            "urine test",
+            "urine dipstick"
+        ],
+        "urine culture": [
+            "urine cx"
+        ],
+        "blood culture": [
+            "blood cx"
+        ],
+        "sputum culture": [
+            "sputum cx"
+        ],
+        "echocardiogram": [
+            "echo",
+            "cardiac ultrasound",
+            "transthoracic echo",
+            "tte"
+        ],
+        "stress test": [
+            "exercise stress test",
+            "nuclear stress test",
+            "treadmill test",
+            "cardiac stress test"
+        ],
+        "cardiac catheterization": [
+            "cardiac cath",
+            "angiogram",
+            "coronary angiography"
+        ],
+        "colonoscopy": [
+            "lower endoscopy",
+            "colon screening"
+        ],
+        "endoscopy": [
+            "upper endoscopy",
+            "egd",
+            "esophagogastroduodenoscopy"
+        ],
+        "ultrasound": [
+            "sonogram",
+            "us",
+            "ultrasonography"
+        ],
+        "x-ray": [
+            "radiograph",
+            "plain film",
+            "chest x-ray",
+            "cxr"
+        ],
+        "mammogram": [
+            "breast imaging",
+            "screening mammography"
+        ],
+        "bone density scan": [
+            "dexa scan",
+            "dxa",
+            "bone densitometry"
+        ],
+        "pulmonary function test": [
+            "pft",
+            "spirometry",
+            "lung function test"
+        ],
+        "arterial blood gas": [
+            "abg",
+            "blood gas"
+        ],
+        "coagulation studies": [
+            "pt",
+            "ptt",
+            "inr",
+            "prothrombin time"
+        ],
+        "lumbar puncture": [
+            "spinal tap",
+            "lp",
+            "csf analysis"
+        ],
+        "biopsy": [
+            "tissue biopsy",
+            "pathology"
+        ],
+        "pap smear": [
+            "cervical cytology",
+            "pap test"
+        ],
+        "eeg": [
+            "electroencephalogram",
+            "brain wave test"
+        ],
+        "emg": [
+            "electromyography",
+            "nerve conduction study"
+        ],
+        "holter monitor": [
+            "ambulatory ecg",
+            "24-hour monitor",
+            "cardiac monitor"
+        ],
+        "sleep study": [
+            "polysomnography",
+            "psg",
+            "sleep test"
+        ],
+        "d-dimer": [
+            "fibrin degradation product"
+        ],
+        "sed rate": [
+            "esr",
+            "erythrocyte sedimentation rate"
+        ],
+        "c-reactive protein": [
+            "crp",
+            "inflammatory marker"
+        ],
+        "rheumatoid factor": [
+            "rf"
+        ],
+        "ana": [
+            "antinuclear antibody"
+        ],
+        "cea": [
+            "carcinoembryonic antigen",
+            "tumor marker"
+        ],
+        "ca 19-9": [
+            "cancer antigen",
+            "tumor marker"
+        ],
+        "ca 125": [
+            "cancer antigen",
+            "ovarian tumor marker"
+        ],
+        "vitamin d": [
+            "25-hydroxyvitamin d",
+            "vitamin d level"
+        ],
+        "vitamin b12": [
+            "cobalamin",
+            "b12 level"
+        ],
+        "folate": [
+            "folic acid",
+            "folate level"
+        ],
+        "iron studies": [
+            "serum iron",
+            "ferritin",
+            "tibc",
+            "transferrin saturation"
+        ]
+    },
+    "body_parts": {
+        "heart": [
+            "cardiac",
+            "myocardium",
+            "coronary",
+            "atrium",
+            "ventricle",
+            "valve"
+        ],
+        "lung": [
+            "pulmonary",
+            "respiratory",
+            "bronchial",
+            "alveolar",
+            "pleural"
+        ],
+        "kidney": [
+            "renal",
+            "nephro",
+            "urinary"
+        ],
+        "liver": [
+            "hepatic",
+            "hepato",
+            "biliary"
+        ],
+        "brain": [
+            "cerebral",
+            "neurological",
+            "cns",
+            "cerebrum",
+            "cerebellum"
+        ],
+        "stomach": [
+            "gastric",
+            "gastro"
+        ],
+        "intestine": [
+            "bowel",
+            "gut",
+            "gastrointestinal",
+            "enteric",
+            "colon",
+            "small bowel"
+        ],
+        "blood vessel": [
+            "vascular",
+            "arterial",
+            "venous",
+            "artery",
+            "vein",
+            "capillary"
+        ],
+        "bone": [
+            "skeletal",
+            "osseous",
+            "vertebra",
+            "spine"
+        ],
+        "muscle": [
+            "muscular",
+            "myopathy",
+            "musculoskeletal"
+        ],
+        "pancreas": [
+            "pancreatic"
+        ],
+        "spleen": [
+            "splenic"
+        ],
+        "thyroid": [
+            "thyroid gland",
+            "thyroidal"
+        ],
+        "adrenal": [
+            "adrenal gland",
+            "suprarenal"
+        ],
+        "pituitary": [
+            "pituitary gland",
+            "hypophysis"
+        ],
+        "bladder": [
+            "urinary bladder",
+            "vesical"
+        ],
+        "urethra": [
+            "urethral"
+        ],
+        "prostate": [
+            "prostatic"
+        ],
+        "uterus": [
+            "uterine",
+            "endometrial"
+        ],
+        "ovary": [
+            "ovarian"
+        ],
+        "breast": [
+            "mammary"
+        ],
+        "skin": [
+            "dermal",
+            "cutaneous",
+            "integumentary"
+        ],
+        "eye": [
+            "ocular",
+            "ophthalmic",
+            "retina",
+            "cornea"
+        ],
+        "ear": [
+            "auditory",
+            "otic",
+            "tympanic"
+        ],
+        "nose": [
+            "nasal",
+            "sinus"
+        ],
+        "throat": [
+            "pharyngeal",
+            "laryngeal"
+        ],
+        "esophagus": [
+            "esophageal"
+        ],
+        "gallbladder": [
+            "cholecystic",
+            "biliary"
+        ],
+        "appendix": [
+            "appendiceal"
+        ],
+        "rectum": [
+            "rectal",
+            "anorectal"
+        ],
+        "anus": [
+            "anal"
+        ],
+        "joint": [
+            "articular",
+            "synovial"
+        ],
+        "cartilage": [
+            "chondral"
+        ],
+        "tendon": [
+            "tendinous"
+        ],
+        "ligament": [
+            "ligamentous"
+        ],
+        "nerve": [
+            "neural",
+            "neurological",
+            "peripheral nerve"
+        ],
+        "spinal cord": [
+            "myelopathy",
+            "spinal"
+        ],
+        "lymph node": [
+            "lymphatic",
+            "lymphoid"
+        ],
+        "tonsil": [
+            "tonsillar"
+        ],
+        "adenoid": [
+            "adenoidal"
+        ]
+    },
+    "severity_indicators": {
+        "mild": [
+            "slight",
+            "minor",
+            "minimal",
+            "low-grade",
+            "trivial",
+            "negligible"
+        ],
+        "moderate": [
+            "moderate",
+            "medium",
+            "intermediate",
+            "moderately severe"
+        ],
+        "severe": [
+            "severe",
+            "serious",
+            "marked",
+            "significant",
+            "profound",
+            "critical",
+            "grave"
+        ],
+        "acute": [
+            "sudden",
+            "rapid",
+            "immediate",
+            "emergent",
+            "urgent",
+            "abrupt"
+        ],
+        "chronic": [
+            "long-term",
+            "persistent",
+            "ongoing",
+            "longstanding",
+            "recurrent"
+        ],
+        "progressive": [
+            "worsening",
+            "advancing",
+            "deteriorating",
+            "declining"
+        ],
+        "stable": [
+            "unchanged",
+            "steady",
+            "controlled",
+            "maintained"
+        ],
+        "resolving": [
+            "improving",
+            "recovering",
+            "healing",
+            "subsiding"
+        ]
+    },
+    "certainty_indicators": {
+        "definite": [
+            "confirmed",
+            "diagnosed",
+            "established",
+            "proven",
+            "documented"
+        ],
+        "probable": [
+            "likely",
+            "probable",
+            "suspected",
+            "presumed",
+            "suggestive"
+        ],
+        "possible": [
+            "possible",
+            "potential",
+            "may have",
+            "could be",
+            "questionable"
+        ],
+        "rule_out": [
+            "rule out",
+            "r/o",
+            "exclude",
+            "differential",
+            "consider"
+        ]
+    },
+    "temporal_indicators": {
+        "current": [
+            "present",
+            "active",
+            "ongoing",
+            "current"
+        ],
+        "past": [
+            "history of",
+            "previous",
+            "prior",
+            "former",
+            "old"
+        ],
+        "recent": [
+            "recent",
+            "new onset",
+            "newly diagnosed"
+        ],
+        "childhood": [
+            "since childhood",
+            "lifelong",
+            "congenital"
+        ],
+        "recurrent": [
+            "recurrent",
+            "recurring",
+            "repeated",
+            "episodic"
+        ]
+    },
+    "laterality": {
+        "left": [
+            "left",
+            "left-sided",
+            "sinister"
+        ],
+        "right": [
+            "right",
+            "right-sided",
+            "dexter"
+        ],
+        "bilateral": [
+            "bilateral",
+            "both sides",
+            "bilaterally"
+        ],
+        "unilateral": [
+            "unilateral",
+            "one-sided"
+        ]
+    },
+    "anatomical_locations": {
+        "upper": [
+            "superior",
+            "proximal",
+            "upper",
+            "cranial"
+        ],
+        "lower": [
+            "inferior",
+            "distal",
+            "lower",
+            "caudal"
+        ],
+        "anterior": [
+            "front",
+            "ventral",
+            "anterior"
+        ],
+        "posterior": [
+            "back",
+            "dorsal",
+            "posterior"
+        ],
+        "medial": [
+            "inner",
+            "medial",
+            "middle"
+        ],
+        "lateral": [
+            "outer",
+            "lateral",
+            "side"
+        ],
+        "central": [
+            "central",
+            "midline",
+            "middle"
+        ]
+    },
+    "treatments": {
+        "surgery": [
+            "surgical intervention",
+            "operation",
+            "procedure",
+            "operative",
+            "resection",
+            "excision"
+        ],
+        "radiation": [
+            "radiotherapy",
+            "radiation therapy",
+            "xrt",
+            "irradiation"
+        ],
+        "chemotherapy": [
+            "chemo",
+            "cytotoxic therapy",
+            "antineoplastic therapy"
+        ],
+        "physical therapy": [
+            "pt",
+            "physiotherapy",
+            "rehabilitation"
+        ],
+        "occupational therapy": [
+            "ot"
+        ],
+        "dialysis": [
+            "hemodialysis",
+            "peritoneal dialysis",
+            "renal replacement therapy"
+        ],
+        "oxygen therapy": [
+            "supplemental oxygen",
+            "o2 therapy"
+        ],
+        "ventilation": [
+            "mechanical ventilation",
+            "intubation",
+            "respiratory support"
+        ],
+        "transfusion": [
+            "blood transfusion",
+            "packed red blood cells",
+            "prbc"
+        ]
+    },
+    "vital_signs": {
+        "blood pressure": [
+            "bp",
+            "systolic",
+            "diastolic",
+            "hypertensive",
+            "hypotensive"
+        ],
+        "heart rate": [
+            "pulse",
+            "hr",
+            "bpm",
+            "beats per minute"
+        ],
+        "respiratory rate": [
+            "rr",
+            "breathing rate",
+            "respirations"
+        ],
+        "temperature": [
+            "temp",
+            "fever",
+            "afebrile",
+            "febrile"
+        ],
+        "oxygen saturation": [
+            "spo2",
+            "o2 sat",
+            "pulse ox",
+            "saturation"
+        ]
+    },
+    "allergy_terms": {
+        "allergy": [
+            "allergic",
+            "hypersensitivity",
+            "allergic reaction"
+        ],
+        "anaphylaxis": [
+            "anaphylactic",
+            "severe allergic reaction"
+        ],
+        "adverse reaction": [
+            "adverse effect",
+            "side effect",
+            "drug reaction",
+            "intolerance"
+        ],
+        "rash": [
+            "urticaria",
+            "hives",
+            "skin reaction",
+            "erythema"
+        ],
+        "nausea from medication": [
+            "medication-induced nausea",
+            "drug-induced nausea"
+        ]
+    },
+    "social_history": {
+        "smoking": [
+            "tobacco use",
+            "cigarette",
+            "smoker",
+            "pack years",
+            "nicotine"
+        ],
+        "alcohol": [
+            "ethanol",
+            "drinking",
+            "alcohol use",
+            "alcoholic",
+            "etoh"
+        ],
+        "drug use": [
+            "substance abuse",
+            "illicit drugs",
+            "recreational drugs",
+            "narcotics"
+        ],
+        "exercise": [
+            "physical activity",
+            "sedentary",
+            "active lifestyle"
+        ],
+        "occupation": [
+            "work",
+            "employment",
+            "occupational exposure"
+        ]
+    },
+    "family_history": {
+        "family history": [
+            "fh",
+            "familial",
+            "hereditary",
+            "genetic predisposition"
+        ],
+        "maternal": [
+            "mother",
+            "mother's side",
+            "maternal lineage"
+        ],
+        "paternal": [
+            "father",
+            "father's side",
+            "paternal lineage"
+        ],
+        "sibling": [
+            "brother",
+            "sister",
+            "siblings"
+        ],
+        "grandparent": [
+            "grandmother",
+            "grandfather",
+            "grandparents"
+        ]
+    },
+    "procedures": {
+        "appendectomy": [
+            "appendix removal",
+            "removal of appendix"
+        ],
+        "cholecystectomy": [
+            "gallbladder removal",
+            "gb removal"
+        ],
+        "hysterectomy": [
+            "uterus removal",
+            "removal of uterus"
+        ],
+        "mastectomy": [
+            "breast removal"
+        ],
+        "prostatectomy": [
+            "prostate removal"
+        ],
+        "colectomy": [
+            "colon resection",
+            "bowel resection"
+        ],
+        "coronary artery bypass": [
+            "cabg",
+            "bypass surgery",
+            "heart bypass"
+        ],
+        "angioplasty": [
+            "pci",
+            "percutaneous coronary intervention",
+            "stent placement"
+        ],
+        "hip replacement": [
+            "total hip arthroplasty",
+            "tha",
+            "hip arthroplasty"
+        ],
+        "knee replacement": [
+            "total knee arthroplasty",
+            "tka",
+            "knee arthroplasty"
+        ],
+        "cataract surgery": [
+            "cataract extraction",
+            "lens replacement"
+        ],
+        "tonsillectomy": [
+            "tonsil removal"
+        ],
+        "cesarean section": [
+            "c-section",
+            "cesarean delivery",
+            "cs"
+        ],
+        "laparoscopy": [
+            "laparoscopic surgery",
+            "minimally invasive surgery"
+        ],
+        "arthroscopy": [
+            "arthroscopic surgery",
+            "joint scope"
+        ],
+        "biopsy": [
+            "tissue sampling",
+            "needle biopsy",
+            "excisional biopsy"
+        ],
+        "lumpectomy": [
+            "breast-conserving surgery",
+            "partial mastectomy"
+        ],
+        "spinal fusion": [
+            "spondylodesis",
+            "vertebral fusion"
+        ],
+        "hernia repair": [
+            "herniorrhaphy",
+            "hernioplasty"
+        ],
+        "pacemaker insertion": [
+            "pacemaker placement",
+            "cardiac pacemaker"
+        ],
+        "icd placement": [
+            "defibrillator implantation",
+            "implantable cardioverter defibrillator"
+        ],
+        "tracheostomy": [
+            "trach",
+            "tracheotomy"
+        ],
+        "thoracotomy": [
+            "chest surgery",
+            "open chest procedure"
+        ],
+        "craniotomy": [
+            "skull surgery",
+            "brain surgery access"
+        ]
+    },
+    "clinical_findings": {
+        "murmur": [
+            "heart murmur",
+            "cardiac murmur",
+            "systolic murmur",
+            "diastolic murmur"
+        ],
+        "rales": [
+            "crackles",
+            "pulmonary rales",
+            "lung crackles"
+        ],
+        "wheezes": [
+            "wheezing",
+            "bronchospasm",
+            "expiratory wheeze"
+        ],
+        "hepatomegaly": [
+            "enlarged liver",
+            "liver enlargement"
+        ],
+        "splenomegaly": [
+            "enlarged spleen",
+            "spleen enlargement"
+        ],
+        "lymphadenopathy": [
+            "swollen lymph nodes",
+            "enlarged lymph nodes"
+        ],
+        "ascites": [
+            "abdominal fluid",
+            "peritoneal fluid"
+        ],
+        "pleural effusion": [
+            "fluid in lungs",
+            "pleural fluid"
+        ],
+        "clubbing": [
+            "digital clubbing",
+            "finger clubbing"
+        ],
+        "cyanosis": [
+            "blue discoloration",
+            "bluish skin"
+        ],
+        "pallor": [
+            "pale",
+            "paleness",
+            "pale skin"
+        ],
+        "jaundice": [
+            "icterus",
+            "yellowing",
+            "yellow discoloration"
+        ],
+        "petechiae": [
+            "pinpoint bleeding",
+            "small hemorrhages"
+        ],
+        "ecchymosis": [
+            "bruising",
+            "bruise",
+            "contusion"
+        ],
+        "organomegaly": [
+            "organ enlargement",
+            "enlarged organ"
+        ]
+    },
+    "lab_values": {
+        "elevated": [
+            "high",
+            "increased",
+            "raised",
+            "above normal"
+        ],
+        "decreased": [
+            "low",
+            "reduced",
+            "below normal",
+            "depressed"
+        ],
+        "normal": [
+            "within normal limits",
+            "wnl",
+            "unremarkable",
+            "normal range"
+        ],
+        "critical": [
+            "critically high",
+            "critically low",
+            "panic value"
+        ],
+        "negative": [
+            "negative",
+            "not detected",
+            "absent"
+        ],
+        "positive": [
+            "positive",
+            "detected",
+            "present",
+            "reactive"
+        ]
+    },
+    "imaging_findings": {
+        "mass": [
+            "lesion",
+            "nodule",
+            "tumor",
+            "growth",
+            "space-occupying lesion"
+        ],
+        "consolidation": [
+            "infiltrate",
+            "opacity",
+            "pulmonary consolidation"
+        ],
+        "atelectasis": [
+            "lung collapse",
+            "collapsed lung"
+        ],
+        "pneumothorax": [
+            "collapsed lung",
+            "air in pleural space"
+        ],
+        "fracture": [
+            "break",
+            "broken bone",
+            "bone fracture"
+        ],
+        "dislocation": [
+            "joint dislocation",
+            "displaced joint"
+        ],
+        "stenosis": [
+            "narrowing",
+            "stricture",
+            "constriction"
+        ],
+        "occlusion": [
+            "blockage",
+            "obstruction",
+            "complete blockage"
+        ],
+        "aneurysm": [
+            "dilation",
+            "bulge",
+            "vascular aneurysm"
+        ],
+        "hemorrhage": [
+            "bleeding",
+            "blood",
+            "hematoma"
+        ],
+        "infarction": [
+            "dead tissue",
+            "ischemic area",
+            "tissue death"
+        ],
+        "ischemia": [
+            "decreased blood flow",
+            "poor perfusion"
+        ],
+        "cardiomegaly": [
+            "enlarged heart",
+            "heart enlargement"
+        ],
+        "calcification": [
+            "calcium deposits",
+            "calcified"
+        ],
+        "edema": [
+            "swelling",
+            "fluid accumulation"
+        ]
+    },
+    "microorganisms": {
+        "bacteria": [
+            "bacterial",
+            "bacterium",
+            "gram positive",
+            "gram negative"
+        ],
+        "virus": [
+            "viral",
+            "viruses"
+        ],
+        "fungus": [
+            "fungal",
+            "yeast",
+            "mold"
+        ],
+        "parasite": [
+            "parasitic",
+            "parasites"
+        ],
+        "staphylococcus": [
+            "staph",
+            "s aureus",
+            "mrsa",
+            "mssa"
+        ],
+        "streptococcus": [
+            "strep",
+            "s pneumoniae",
+            "s pyogenes"
+        ],
+        "escherichia coli": [
+            "e coli",
+            "ecoli"
+        ],
+        "pseudomonas": [
+            "p aeruginosa"
+        ],
+        "clostridium": [
+            "c diff",
+            "c difficile",
+            "clostridium difficile"
+        ],
+        "mycobacterium": [
+            "tb",
+            "tuberculosis",
+            "m tuberculosis"
+        ],
+        "candida": [
+            "yeast infection",
+            "candidiasis"
+        ],
+        "influenza": [
+            "flu",
+            "influenza virus"
+        ],
+        "covid": [
+            "covid-19",
+            "coronavirus",
+            "sars-cov-2"
+        ],
+        "herpes": [
+            "hsv",
+            "herpes simplex",
+            "herpes virus"
+        ],
+        "hepatitis virus": [
+            "hav",
+            "hbv",
+            "hcv",
+            "hepatitis a",
+            "hepatitis b",
+            "hepatitis c"
+        ]
+    },
+    "specialties": {
+        "cardiology": [
+            "cardiac",
+            "heart specialist",
+            "cardiologist"
+        ],
+        "pulmonology": [
+            "pulmonary",
+            "lung specialist",
+            "pulmonologist"
+        ],
+        "gastroenterology": [
+            "gi",
+            "gastroenterologist",
+            "gi specialist"
+        ],
+        "neurology": [
+            "neurologist",
+            "neurological",
+            "neuro"
+        ],
+        "nephrology": [
+            "nephrologist",
+            "kidney specialist"
+        ],
+        "endocrinology": [
+            "endocrinologist",
+            "hormone specialist"
+        ],
+        "hematology": [
+            "hematologist",
+            "blood specialist"
+        ],
+        "oncology": [
+            "oncologist",
+            "cancer specialist"
+        ],
+        "rheumatology": [
+            "rheumatologist",
+            "arthritis specialist"
+        ],
+        "dermatology": [
+            "dermatologist",
+            "skin specialist"
+        ],
+        "psychiatry": [
+            "psychiatrist",
+            "mental health"
+        ],
+        "orthopedics": [
+            "orthopedic",
+            "bone specialist",
+            "orthopedist"
+        ],
+        "urology": [
+            "urologist",
+            "urinary specialist"
+        ],
+        "gynecology": [
+            "gynecologist",
+            "women's health"
+        ],
+        "obstetrics": [
+            "obstetrician",
+            "ob",
+            "pregnancy specialist"
+        ],
+        "ophthalmology": [
+            "ophthalmologist",
+            "eye specialist"
+        ],
+        "otolaryngology": [
+            "ent",
+            "ear nose throat"
+        ],
+        "surgery": [
+            "surgeon",
+            "surgical",
+            "operative"
+        ],
+        "emergency medicine": [
+            "er",
+            "emergency",
+            "emergency physician"
+        ],
+        "internal medicine": [
+            "internist",
+            "general medicine"
+        ],
+        "family medicine": [
+            "family practice",
+            "primary care"
+        ],
+        "pediatrics": [
+            "pediatrician",
+            "children's doctor"
+        ],
+        "geriatrics": [
+            "geriatrician",
+            "elderly care"
+        ],
+        "anesthesiology": [
+            "anesthesiologist",
+            "anesthesia"
+        ],
+        "radiology": [
+            "radiologist",
+            "imaging specialist"
+        ],
+        "pathology": [
+            "pathologist",
+            "lab medicine"
+        ]
+    },
+    "units": {
+        "blood pressure": [
+            "mmhg",
+            "mm hg",
+            "millimeters of mercury"
+        ],
+        "weight": [
+            "kg",
+            "kilogram",
+            "lb",
+            "pound",
+            "lbs"
+        ],
+        "height": [
+            "cm",
+            "centimeter",
+            "inch",
+            "inches",
+            "feet",
+            "ft"
+        ],
+        "temperature": [
+            "celsius",
+            "fahrenheit",
+            "degrees",
+            "c",
+            "f"
+        ],
+        "laboratory": [
+            "mg/dl",
+            "mmol/l",
+            "u/l",
+            "iu/l",
+            "pg/ml",
+            "ng/ml",
+            "mcg/ml"
+        ],
+        "volume": [
+            "ml",
+            "milliliter",
+            "liter",
+            "l",
+            "cc"
+        ],
+        "dosage": [
+            "mg",
+            "milligram",
+            "mcg",
+            "microgram",
+            "gram",
+            "g",
+            "units"
+        ]
+    },
+    "risk_factors": {
+        "modifiable": [
+            "smoking",
+            "obesity",
+            "sedentary lifestyle",
+            "poor diet",
+            "alcohol abuse"
+        ],
+        "non_modifiable": [
+            "age",
+            "gender",
+            "family history",
+            "genetics",
+            "race",
+            "ethnicity"
+        ],
+        "cardiovascular": [
+            "hypertension",
+            "high cholesterol",
+            "diabetes",
+            "smoking"
+        ],
+        "cancer": [
+            "smoking",
+            "family history",
+            "radiation exposure",
+            "chemical exposure"
+        ]
+    },
+    "risk_weights": {
+        "DISEASE": 1.0,
+        "CONDITION": 0.9,
+        "SYMPTOM": 0.6,
+        "MEDICATION": 0.5,
+        "TEST": 0.3,
+        "PROCEDURE": 0.4,
+        "BODY_PART": 0.2,
+        "TREATMENT": 0.5,
+        "DIAGNOSIS": 1.0,
+        "CLINICAL_FINDING": 0.5,
+        "IMAGING": 0.3,
+        "IMAGING_FINDING": 0.4,
+        "LAB": 0.3,
+        "LAB_TEST": 0.3,
+        "MICROORGANISM": 0.4,
+        "ALLERGY": 0.2,
+        "FAMILY_HISTORY": 0.2,
+        "SOCIAL_HISTORY": 0.2,
+        "VITAL": 0.3
+    },
+    "high_risk_conditions": {
+        "myocardial infarction": {
+            "score": 95,
+            "category": "cardiac",
+            "urgency": "critical"
+        },
+        "heart failure": {
+            "score": 90,
+            "category": "cardiac",
+            "urgency": "high"
+        },
+        "cardiac arrest": {
+            "score": 98,
+            "category": "cardiac",
+            "urgency": "critical"
+        },
+        "ventricular fibrillation": {
+            "score": 96,
+            "category": "cardiac",
+            "urgency": "critical"
+        },
+        "unstable angina": {
+            "score": 88,
+            "category": "cardiac",
+            "urgency": "high"
+        },
+        "cardiogenic shock": {
+            "score": 94,
+            "category": "cardiac",
+            "urgency": "critical"
+        },
+        "atrial fibrillation": {
+            "score": 75,
+            "category": "cardiac",
+            "urgency": "moderate"
+        },
+        "stroke": {
+            "score": 93,
+            "category": "cerebrovascular",
+            "urgency": "critical"
+        },
+        "hemorrhagic stroke": {
+            "score": 95,
+            "category": "cerebrovascular",
+            "urgency": "critical"
+        },
+        "ischemic stroke": {
+            "score": 92,
+            "category": "cerebrovascular",
+            "urgency": "critical"
+        },
+        "transient ischemic attack": {
+            "score": 82,
+            "category": "cerebrovascular",
+            "urgency": "high"
+        },
+        "subarachnoid hemorrhage": {
+            "score": 96,
+            "category": "cerebrovascular",
+            "urgency": "critical"
+        },
+        "pneumonia": {
+            "score": 78,
+            "category": "respiratory",
+            "urgency": "high"
+        },
+        "acute respiratory distress": {
+            "score": 91,
+            "category": "respiratory",
+            "urgency": "critical"
+        },
+        "pulmonary embolism": {
+            "score": 90,
+            "category": "respiratory",
+            "urgency": "critical"
+        },
+        "copd": {
+            "score": 76,
+            "category": "respiratory",
+            "urgency": "moderate"
+        },
+        "asthma": {
+            "score": 65,
+            "category": "respiratory",
+            "urgency": "moderate"
+        },
+        "respiratory failure": {
+            "score": 93,
+            "category": "respiratory",
+            "urgency": "critical"
+        },
+        "sepsis": {
+            "score": 94,
+            "category": "infectious",
+            "urgency": "critical"
+        },
+        "septic shock": {
+            "score": 97,
+            "category": "infectious",
+            "urgency": "critical"
+        },
+        "meningitis": {
+            "score": 89,
+            "category": "infectious",
+            "urgency": "critical"
+        },
+        "encephalitis": {
+            "score": 88,
+            "category": "infectious",
+            "urgency": "critical"
+        },
+        "cancer": {
+            "score": 85,
+            "category": "oncological",
+            "urgency": "high"
+        },
+        "metastatic cancer": {
+            "score": 95,
+            "category": "oncological",
+            "urgency": "critical"
+        },
+        "malignant tumor": {
+            "score": 88,
+            "category": "oncological",
+            "urgency": "high"
+        },
+        "carcinoma": {
+            "score": 86,
+            "category": "oncological",
+            "urgency": "high"
+        },
+        "lymphoma": {
+            "score": 84,
+            "category": "oncological",
+            "urgency": "high"
+        },
+        "leukemia": {
+            "score": 87,
+            "category": "oncological",
+            "urgency": "high"
+        },
+        "diabetes": {
+            "score": 72,
+            "category": "metabolic",
+            "urgency": "moderate"
+        },
+        "diabetic ketoacidosis": {
+            "score": 90,
+            "category": "metabolic",
+            "urgency": "critical"
+        },
+        "hypoglycemia": {
+            "score": 75,
+            "category": "metabolic",
+            "urgency": "high"
+        },
+        "thyroid storm": {
+            "score": 92,
+            "category": "endocrine",
+            "urgency": "critical"
+        },
+        "adrenal crisis": {
+            "score": 93,
+            "category": "endocrine",
+            "urgency": "critical"
+        },
+        "kidney failure": {
+            "score": 85,
+            "category": "renal",
+            "urgency": "high"
+        },
+        "acute kidney injury": {
+            "score": 88,
+            "category": "renal",
+            "urgency": "high"
+        },
+        "chronic kidney disease": {
+            "score": 78,
+            "category": "renal",
+            "urgency": "moderate"
+        },
+        "renal failure": {
+            "score": 86,
+            "category": "renal",
+            "urgency": "high"
+        },
+        "liver failure": {
+            "score": 89,
+            "category": "hepatic",
+            "urgency": "critical"
+        },
+        "cirrhosis": {
+            "score": 80,
+            "category": "hepatic",
+            "urgency": "high"
+        },
+        "hepatic encephalopathy": {
+            "score": 87,
+            "category": "hepatic",
+            "urgency": "high"
+        },
+        "hemorrhage": {
+            "score": 86,
+            "category": "hematological",
+            "urgency": "critical"
+        },
+        "anemia": {
+            "score": 60,
+            "category": "hematological",
+            "urgency": "moderate"
+        },
+        "thrombocytopenia": {
+            "score": 74,
+            "category": "hematological",
+            "urgency": "moderate"
+        },
+        "coagulopathy": {
+            "score": 82,
+            "category": "hematological",
+            "urgency": "high"
+        },
+        "hypertension": {
+            "score": 68,
+            "category": "cardiovascular",
+            "urgency": "moderate"
+        },
+        "hyperlipidemia": {
+            "score": 62,
+            "category": "metabolic",
+            "urgency": "moderate"
+        },
+        "obesity": {
+            "score": 58,
+            "category": "metabolic",
+            "urgency": "low"
+        }
+    },
+    "risk_factor_definitions": {
+        "Cardiovascular Risk": {
+            "keywords": [
+                "myocardial infarction",
+                "heart failure",
+                "hypertension",
+                "cholesterol",
+                "arrhythmia",
+                "angina",
+                "cardiac",
+                "coronary",
+                "valve disease",
+                "cardiomyopathy"
+            ],
+            "weight": 1.2
+        },
+        "Respiratory Risk": {
+            "keywords": [
+                "pneumonia",
+                "copd",
+                "asthma",
+                "respiratory failure",
+                "pulmonary embolism",
+                "dyspnea",
+                "hypoxia",
+                "lung disease",
+                "bronchitis"
+            ],
+            "weight": 1.1
+        },
+        "Metabolic Risk": {
+            "keywords": [
+                "diabetes",
+                "hyperglycemia",
+                "insulin resistance",
+                "obesity",
+                "metabolic syndrome",
+                "hyperlipidemia",
+                "thyroid",
+                "ketoacidosis"
+            ],
+            "weight": 0.9
+        },
+        "Neurological Risk": {
+            "keywords": [
+                "stroke",
+                "seizure",
+                "neurological deficit",
+                "headache",
+                "migraine",
+                "encephalopathy",
+                "neuropathy",
+                "dementia",
+                "parkinson"
+            ],
+            "weight": 1.1
+        },
+        "Oncological Risk": {
+            "keywords": [
+                "cancer",
+                "tumor",
+                "malignancy",
+                "carcinoma",
+                "metastasis",
+                "neoplasm",
+                "lymphoma",
+                "leukemia",
+                "sarcoma"
+            ],
+            "weight": 1.3
+        },
+        "Infectious Risk": {
+            "keywords": [
+                "sepsis",
+                "infection",
+                "pneumonia",
+                "meningitis",
+                "bacteremia",
+                "viral",
+                "bacterial",
+                "fungal",
+                "abscess"
+            ],
+            "weight": 1.2
+        },
+        "Renal Risk": {
+            "keywords": [
+                "kidney failure",
+                "renal",
+                "dialysis",
+                "acute kidney injury",
+                "chronic kidney disease",
+                "nephropathy",
+                "uremia"
+            ],
+            "weight": 1.0
+        },
+        "Hepatic Risk": {
+            "keywords": [
+                "liver failure",
+                "cirrhosis",
+                "hepatitis",
+                "hepatic",
+                "jaundice",
+                "ascites",
+                "encephalopathy"
+            ],
+            "weight": 1.0
+        }
+    },
+    "critical_symptoms": {
+        "chest pain": 85,
+        "shortness of breath": 80,
+        "altered mental status": 88,
+        "severe pain": 75,
+        "loss of consciousness": 92,
+        "difficulty breathing": 85,
+        "confusion": 78,
+        "severe headache": 80,
+        "hemoptysis": 86,
+        "syncope": 82
+    },
+    "high_risk_medications": {
+        "chemotherapy": 0.8,
+        "immunosuppressant": 0.7,
+        "anticoagulant": 0.6,
+        "insulin": 0.5,
+        "opioid": 0.5,
+        "corticosteroid": 0.4
+    },
+    "comorbidity_multipliers": {
+        "diabetes|hypertension": 1.4,
+        "heart failure|kidney disease": 1.5,
+        "copd|heart failure": 1.4,
+        "diabetes|kidney disease": 1.5,
+        "cancer|diabetes": 1.3,
+        "atrial fibrillation|stroke": 1.4
+    },
+    "normal_indicators": {
+        "normal": 0.4,
+        "stable": 0.5,
+        "unremarkable": 0.5,
+        "within normal limits": 0.7,
+        "within normal range": 0.7,
+        "no acute distress": 0.6,
+        "clear": 0.5,
+        "regular": 0.4,
+        "healthy": 0.8,
+        "good general health": 0.9,
+        "well-controlled": 0.6,
+        "asymptomatic": 0.7,
+        "resolved": 0.8,
+        "improved": 0.6,
+        "optimal": 0.7,
+        "negative": 0.6,
+        "absent": 0.6,
+        "no evidence of": 0.6,
+        "ruled out": 0.7
+    },
+    "vital_sign_keywords": [
+        "blood pressure",
+        "bp",
+        "systolic",
+        "diastolic",
+        "heart rate",
+        "hr",
+        "pulse",
+        "bpm",
+        "respiratory rate",
+        "rr",
+        "temperature",
+        "temp",
+        "fever",
+        "afebrile",
+        "oxygen saturation",
+        "spo2",
+        "o2 sat",
+        "pulse ox",
+        "saturation"
+    ],
+    "lab_test_keywords": [
+        "cbc",
+        "complete blood count",
+        "cmp",
+        "metabolic panel",
+        "bmp",
+        "lipid panel",
+        "lfts",
+        "hepatic panel",
+        "renal function",
+        "bun",
+        "creatinine",
+        "gfr",
+        "egfr",
+        "bnp",
+        "troponin",
+        "hba1c",
+        "a1c",
+        "tsh",
+        "free t4",
+        "free t3",
+        "psa",
+        "urinalysis",
+        "ua",
+        "urine culture",
+        "blood culture",
+        "sputum culture",
+        "d-dimer",
+        "esr",
+        "crp",
+        "rf",
+        "ana",
+        "vitamin d",
+        "vitamin b12",
+        "folate",
+        "iron",
+        "ferritin",
+        "tibc"
+    ],
+    "allergy_keywords": [
+        "allergy",
+        "allergic",
+        "hypersensitivity",
+        "anaphylaxis",
+        "adverse reaction",
+        "side effect"
+    ],
+    "social_history_keywords": [
+        "smoking",
+        "tobacco",
+        "cigarette",
+        "pack years",
+        "alcohol",
+        "etoh",
+        "drug",
+        "exercise",
+        "occupation"
+    ],
+    "family_history_keywords": [
+        "family history",
+        "maternal",
+        "paternal",
+        "sibling",
+        "grandparent",
+        "hereditary",
+        "genetic"
+    ],
+    "imaging_finding_keywords": [
+        "x-ray",
+        "cxr",
+        "ct",
+        "mri",
+        "ultrasound",
+        "echocardiogram",
+        "echo",
+        "angiography",
+        "mass",
+        "lesion",
+        "nodule",
+        "consolidation",
+        "atelectasis",
+        "pneumothorax"
+    ],
+    "microorganism_keywords": [
+        "bacteria",
+        "viral",
+        "fungal",
+        "parasite",
+        "staph",
+        "mrsa",
+        "strep",
+        "pseudomonas",
+        "clostridium",
+        "c diff",
+        "tuberculosis",
+        "candida",
+        "influenza",
+        "covid",
+        "herpes",
+        "hepatitis"
+    ]
+}

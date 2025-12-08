@@ -11,3 +11,4 @@ pymupdf
 pillow
 pytesseract
 networkx
+reportlab
